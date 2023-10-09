@@ -7,7 +7,7 @@ pub async fn connect(Extension(registry): Extension<AMSessionRegistry>) -> impl 
     let session = RobloxSession::new().unwrap();
     let session_id = session.id.to_string();
 
-    let mut registry = registry.lock().unwrap();
+    let mut registry = registry.lock().await;
     registry.add_session(session);
 
     log::debug!("Created new session with ID {}", session_id);

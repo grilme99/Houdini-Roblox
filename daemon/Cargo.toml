@@ -5,8 +5,9 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.75"
-axum = "0.6.20"
+axum = { version = "0.6.20", features = ["macros"] }
 env_logger = "0.10.0"
+futures = { version = "0.3.28", default-features = false, features = ["std", "alloc"] }
 hapi-rs = { git = "https://github.com/alexxbb/hapi-rs", rev = "70d9d19" }
 log = "0.4.20"
 serde = { version = "1.0.188", features = ["derive"] }

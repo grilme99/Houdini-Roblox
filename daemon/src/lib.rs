@@ -1,3 +1,5 @@
+#![feature(trivial_bounds)]
+
 pub mod application;
 pub mod message;
 pub mod routes;
