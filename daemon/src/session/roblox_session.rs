@@ -2,11 +2,11 @@ use anyhow::Context;
 use hapi_rs::session::StatusVerbosity;
 use uuid::Uuid;
 
-use crate::message::IncomingMessage;
+use crate::message::OutgoingMessage;
 
 use super::HoudiniSession;
 
-pub type MessageQueue = Vec<IncomingMessage>;
+pub type MessageQueue = Vec<OutgoingMessage>;
 
 #[derive(Debug)]
 pub struct RobloxSession {

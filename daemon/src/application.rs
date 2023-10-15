@@ -5,9 +5,11 @@ use axum::{
     Extension, Router,
 };
 use futures::lock::Mutex;
+use tokio::sync::mpsc;
 
 use crate::{
-    routes::{close, connect, get_messages, send_message},
+    message::ApplicationMessage,
+    routes::{close, connect, get_messages, open_hda},
     session::SessionRegistry,
 };
 
@@ -19,19 +21,51 @@ pub async fn start_application() -> anyhow::Result<()> {
 
     log::info!("Starting application on {}:{}", address, port);
 
+    let (tx_in, mut rx_in) = mpsc::channel::<ApplicationMessage>(32);
+    let (tx_out, rx_out) = mpsc::channel::<ApplicationMessage>(32);
+
     let session_registry = Arc::new(Mutex::new(SessionRegistry::new()));
 
     let app = Router::new()
         .route("/close", post(close))
         .route("/connect", post(connect))
         .route("/messages", get(get_messages))
-        .route("/message", post(send_message))
-        .layer(Extension(session_registry));
+        .route("/open-hda", post(open_hda))
+        .layer(Extension(session_registry))
+        .layer(Extension(tx_in))
+        .layer(Extension(Arc::new(Mutex::new(rx_out))));
 
-    axum::Server::bind(&socket_addr)
-        .serve(app.into_make_service())
-        .await
-        .map_err(|error| anyhow::anyhow!("Failed to start server: {}", error))?;
+    // Spawn Axum server as a detached task
+    tokio::spawn(async move {
+        if let Err(error) = axum::Server::bind(&socket_addr)
+            .serve(app.into_make_service())
+            .await
+        {
+            eprintln!("Failed to start server: {}", error);
+        }
+    });
+
+    // Some code MUST run on the main thread, so we handle that here with
+    // message passing.
+    while let Some(message) = rx_in.recv().await {
+        match message {
+            ApplicationMessage::OpenFileSelector(options) => {
+                log::debug!("Opening file selector with options {:?}", options);
+
+                let mut dialog = rfd::FileDialog::new()
+                    .set_directory(options.directory)
+                    .set_title(options.name);
+
+                for (name, extensions) in options.filters {
+                    dialog = dialog.add_filter(name, extensions);
+                }
+
+                let res = dialog.pick_file();
+                tx_out.send(ApplicationMessage::FileSelected(res)).await?;
+            }
+            _ => {}
+        }
+    }
 
     Ok(())
 }

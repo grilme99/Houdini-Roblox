@@ -6,7 +6,8 @@ use std::{
 
 use anyhow::Context;
 use hapi_rs::session::{
-    self, ConnectionType, License, Session, SessionOptionsBuilder, SessionType, StatusVerbosity,
+    self, AssetLibrary, ConnectionType, License, Session, SessionOptionsBuilder, SessionType,
+    StatusVerbosity,
 };
 use serde::Serialize;
 
@@ -150,5 +151,9 @@ impl HoudiniSession {
         }
 
         Ok(())
+    }
+
+    pub fn load_asset_file<P: AsRef<Path>>(&self, path: P) -> anyhow::Result<AssetLibrary> {
+        Ok(self.session.load_asset_file(path)?)
     }
 }
