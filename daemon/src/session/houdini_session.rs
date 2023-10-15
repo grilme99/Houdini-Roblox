@@ -1,4 +1,8 @@
-use std::{net::SocketAddrV4, path::Path};
+use std::{
+    fs,
+    net::SocketAddrV4,
+    path::{Path, PathBuf},
+};
 
 use anyhow::Context;
 use hapi_rs::session::{
@@ -25,7 +29,8 @@ pub struct SessionInfo {
 
 #[derive(Debug)]
 pub struct HoudiniSession {
-    pub session: Session,
+    session: Session,
+    pipe_path: Option<PathBuf>,
 }
 
 impl HoudiniSession {
@@ -60,7 +65,10 @@ impl HoudiniSession {
 
         log::debug!("Connected to pipe server");
 
-        Ok(Self { session })
+        Ok(Self {
+            session,
+            pipe_path: Some(pipe_path),
+        })
     }
 
     /// Creates and connects to a Houdini Engine socket server.
@@ -89,7 +97,10 @@ impl HoudiniSession {
 
         log::debug!("Connected to socket server");
 
-        Ok(Self { session })
+        Ok(Self {
+            session,
+            pipe_path: None,
+        })
     }
 
     pub fn session_info(&self) -> anyhow::Result<SessionInfo> {
@@ -124,5 +135,20 @@ impl HoudiniSession {
             session_type: session_type.to_string(),
             connection_type: connection_type.to_string(),
         })
+    }
+
+    /// Cleans up the session, closing the HAPI session and removing any temporary files.
+    pub fn cleanup(&self) -> anyhow::Result<()> {
+        self.session
+            .cleanup()
+            .context("Failed to cleanup HAPI session")?;
+
+        if let Some(pipe_path) = &self.pipe_path {
+            if pipe_path.exists() {
+                fs::remove_file(pipe_path).context("Failed to remove pipe file")?;
+            }
+        }
+
+        Ok(())
     }
 }
