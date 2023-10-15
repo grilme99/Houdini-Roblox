@@ -33,13 +33,18 @@ impl HoudiniSession {
     pub fn new_pipe<S: AsRef<Path>>(pipe_name: S, options: Options) -> anyhow::Result<Self> {
         set_hapi_env_variables().context("Failed to set Houdini environment variables")?;
 
+        // Store the pipe file in the temp directory
+        let temp = std::env::temp_dir();
+        let pipe_path = temp.join(&pipe_name);
+
         log::debug!(
-            "Starting pipe server with name {}",
-            pipe_name.as_ref().display()
+            "Starting pipe server with name {} at path {}",
+            pipe_name.as_ref().display(),
+            pipe_path.display()
         );
 
         let server_pid = session::start_engine_pipe_server(
-            &pipe_name,
+            &pipe_path,
             options.auto_close,
             options.timeout,
             options.verbosity,
@@ -50,7 +55,7 @@ impl HoudiniSession {
         log::debug!("Started pipe server with PID {server_pid}");
 
         let session_options = SessionOptionsBuilder::default().build();
-        let session = session::connect_to_pipe(&pipe_name, Some(&session_options), None)
+        let session = session::connect_to_pipe(&pipe_path, Some(&session_options), None)
             .context("Failed to connect to Houdini pipe server")?;
 
         log::debug!("Connected to pipe server");

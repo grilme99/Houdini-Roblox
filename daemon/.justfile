@@ -7,4 +7,4 @@ build:
     HFS={{hfs_path}} cargo build --release
 
 run:
-    HFS={{hfs_path}} HHP={{hfs_path}}/Houdini/python3.9libs RUST_LOG=debug cargo run -- test
+    HFS={{hfs_path}} RUST_LOG=debug cargo run -- test
