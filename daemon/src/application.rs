@@ -13,7 +13,7 @@ use crate::{
 
 pub async fn start_application() -> anyhow::Result<()> {
     // TODO: Allow users to configure the address and port.
-    let socket_addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    let socket_addr = SocketAddr::from(([127, 0, 0, 1], 3030));
     let address = socket_addr.ip().to_string();
     let port = socket_addr.port();
 
