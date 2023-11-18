@@ -1,7 +1,7 @@
 use axum::{
     async_trait,
-    extract::FromRequest,
-    http::{Request, StatusCode},
+    extract::FromRequestParts,
+    http::{request::Parts, StatusCode},
     Json,
 };
 use serde_json::{json, Value};
@@ -10,11 +10,11 @@ use uuid::Uuid;
 pub struct ExtractSessionId(pub Uuid);
 
 #[async_trait]
-impl<S: Send + Sync, B: Send + 'static> FromRequest<S, B> for ExtractSessionId {
+impl<S: Sized> FromRequestParts<S> for ExtractSessionId {
     type Rejection = (StatusCode, Json<Value>);
 
-    async fn from_request(req: Request<B>, _state: &S) -> Result<Self, Self::Rejection> {
-        if let Some(session_id) = req.headers().get("x-session-id") {
+    async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
+        if let Some(session_id) = parts.headers.get("x-session-id") {
             let session_id = session_id.to_str().unwrap();
 
             if let Ok(session_id) = Uuid::parse_str(session_id) {

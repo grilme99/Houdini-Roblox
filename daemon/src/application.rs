@@ -1,15 +1,12 @@
 use std::{net::SocketAddr, sync::Arc};
 
-use axum::{
-    routing::{get, post},
-    Extension, Router,
-};
+use axum::{routing::post, Extension, Router};
 use futures::lock::Mutex;
 use tokio::sync::mpsc;
 
 use crate::{
     message::ApplicationMessage,
-    routes::{close, connect, get_messages, open_hda},
+    routes::{close, connect, open_asset},
     session::SessionRegistry,
 };
 
@@ -29,8 +26,7 @@ pub async fn start_application() -> anyhow::Result<()> {
     let app = Router::new()
         .route("/close", post(close))
         .route("/connect", post(connect))
-        .route("/messages", get(get_messages))
-        .route("/open-hda", post(open_hda))
+        .route("/open-asset", post(open_asset))
         .layer(Extension(session_registry))
         .layer(Extension(tx_in))
         .layer(Extension(Arc::new(Mutex::new(rx_out))));

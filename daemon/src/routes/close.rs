@@ -10,7 +10,7 @@ pub async fn close(
     let mut registry = registry.lock().await;
 
     let session = registry.get_session(&session_id).unwrap();
-    session.houdini_session.cleanup().unwrap();
+    session.cleanup().unwrap();
 
     registry.remove_session(&session_id);
     

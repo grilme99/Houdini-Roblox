@@ -1,4 +1,5 @@
 use std::{
+    collections::HashMap,
     fs,
     net::SocketAddrV4,
     path::{Path, PathBuf},
@@ -6,12 +7,25 @@ use std::{
 
 use anyhow::Context;
 use hapi_rs::session::{
-    self, AssetLibrary, ConnectionType, License, Session, SessionOptionsBuilder, SessionType,
+    self, ConnectionType, License, Session as HoudiniSession, SessionOptionsBuilder, SessionType,
     StatusVerbosity,
 };
 use serde::Serialize;
+use thiserror::Error;
+use uuid::Uuid;
 
-use crate::utils::set_hapi_env_variables;
+use crate::{
+    asset::{Asset, AssetError},
+    utils::set_hapi_env_variables,
+};
+
+#[derive(Debug, Error, Serialize)]
+pub enum SessionError {
+    #[error(transparent)]
+    NewAssetError(AssetError),
+}
+
+type Result<T> = std::result::Result<T, SessionError>;
 
 pub struct Options<'a> {
     pub auto_close: bool,
@@ -28,13 +42,15 @@ pub struct SessionInfo {
     pub connection_type: String,
 }
 
-#[derive(Debug)]
-pub struct HoudiniSession {
-    session: Session,
+pub struct Session {
+    pub session_id: Uuid,
+
+    houdini_session: HoudiniSession,
     pipe_path: Option<PathBuf>,
+    asset_db: HashMap<Uuid, Asset>,
 }
 
-impl HoudiniSession {
+impl Session {
     /// Creates and connects to a Houdini Engine pipe server.
     pub fn new_pipe<S: AsRef<Path>>(pipe_name: S, options: Options) -> anyhow::Result<Self> {
         set_hapi_env_variables().context("Failed to set Houdini environment variables")?;
@@ -67,8 +83,11 @@ impl HoudiniSession {
         log::debug!("Connected to pipe server");
 
         Ok(Self {
-            session,
+            session_id: Uuid::new_v4(),
+
+            houdini_session: session,
             pipe_path: Some(pipe_path),
+            asset_db: HashMap::new(),
         })
     }
 
@@ -99,13 +118,16 @@ impl HoudiniSession {
         log::debug!("Connected to socket server");
 
         Ok(Self {
-            session,
+            session_id: Uuid::new_v4(),
+
+            houdini_session: session,
             pipe_path: None,
+            asset_db: HashMap::new(),
         })
     }
 
     pub fn session_info(&self) -> anyhow::Result<SessionInfo> {
-        let license_type = match self.session.get_license_type()? {
+        let license_type = match self.houdini_session.get_license_type()? {
             License::LicenseNone => "None",
             License::HoudiniEngine => "Houdini Engine",
             License::LicenseHoudini => "Houdini",
@@ -117,14 +139,14 @@ impl HoudiniSession {
             _ => "Unknown",
         };
 
-        let session_type = match self.session.session_type() {
+        let session_type = match self.houdini_session.session_type() {
             SessionType::Inprocess => "In-process",
             SessionType::Thrift => "Thrift",
             SessionType::Max => "Max",
             _ => "Unknown",
         };
 
-        let connection_type = match self.session.connection_type() {
+        let connection_type = match self.houdini_session.connection_type() {
             ConnectionType::Custom => "Custom",
             ConnectionType::InProcess => "In-process",
             ConnectionType::ThriftPipe(_) => "Thrift-pipe",
@@ -140,7 +162,7 @@ impl HoudiniSession {
 
     /// Cleans up the session, closing the HAPI session and removing any temporary files.
     pub fn cleanup(&self) -> anyhow::Result<()> {
-        self.session
+        self.houdini_session
             .cleanup()
             .context("Failed to cleanup HAPI session")?;
 
@@ -153,7 +175,17 @@ impl HoudiniSession {
         Ok(())
     }
 
-    pub fn load_asset_file<P: AsRef<Path>>(&self, path: P) -> anyhow::Result<AssetLibrary> {
-        Ok(self.session.load_asset_file(path)?)
+    pub fn get_asset(&self, asset_id: Uuid) -> Option<&Asset> {
+        self.asset_db.get(&asset_id)
+    }
+
+    pub fn load_asset_file<P: AsRef<Path>>(&mut self, path: &P) -> Result<Uuid> {
+        let asset = Asset::new_from_path(&self.houdini_session, path)
+            .map_err(SessionError::NewAssetError)?;
+
+        let asset_id = Uuid::new_v4();
+        self.asset_db.insert(asset_id, asset);
+
+        Ok(asset_id)
     }
 }

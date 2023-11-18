@@ -1,7 +1,9 @@
 use axum::{http::StatusCode, response::IntoResponse, Extension, Json};
+use hapi_rs::session::StatusVerbosity;
 use serde::Serialize;
+use uuid::Uuid;
 
-use crate::session::{AMSessionRegistry, RobloxSession, SessionInfo};
+use crate::session::{AMSessionRegistry, SessionInfo, Session};
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -11,14 +13,22 @@ struct ConnectResponse {
 }
 
 pub async fn connect(Extension(registry): Extension<AMSessionRegistry>) -> impl IntoResponse {
-    let roblox_session = RobloxSession::new().unwrap();
-    let session_id = roblox_session.id.to_string();
+    let id = Uuid::new_v4();
+    let options = crate::session::Options {
+        auto_close: true,
+        timeout: 3000.0,
+        verbosity: StatusVerbosity::Statusverbosity2,
+        log_file: None,
+    };
 
-    let hapi = &roblox_session.houdini_session;
-    let session_info = hapi.session_info().unwrap();
+    let pipe_name = format!("hapi_rbx_{id}");
+    let session = Session::new_pipe(pipe_name, options).unwrap();
+    let session_id = id.to_string();
+
+    let session_info = session.session_info().unwrap();
 
     let mut registry = registry.lock().await;
-    registry.add_session(roblox_session);
+    registry.add_session(session);
 
     log::debug!("Created new session with ID {}", session_id);
 
