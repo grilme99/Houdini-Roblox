@@ -1,29 +1,35 @@
-use axum::{http::StatusCode, response::IntoResponse, Extension, Json};
+use axum::{http::StatusCode, Extension, Json};
 use hapi_rs::session::StatusVerbosity;
 use serde::Serialize;
 use uuid::Uuid;
 
-use crate::session::{AMSessionRegistry, SessionInfo, Session};
+use crate::{
+    error::AppError,
+    session::{AMSessionRegistry, Session, SessionInfo, SessionType},
+};
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
-struct ConnectResponse {
-    id: String,
+pub struct ConnectResponse {
+    id: Uuid,
     session_info: SessionInfo,
 }
 
-pub async fn connect(Extension(registry): Extension<AMSessionRegistry>) -> impl IntoResponse {
+pub async fn connect(
+    Extension(registry): Extension<AMSessionRegistry>,
+) -> Result<(StatusCode, Json<ConnectResponse>), AppError> {
     let id = Uuid::new_v4();
+
     let options = crate::session::Options {
+        session_type: SessionType::Pipe(format!("hapi_rbx_{id}")),
         auto_close: true,
         timeout: 3000.0,
-        verbosity: StatusVerbosity::Statusverbosity2,
+        verbosity: StatusVerbosity::Statusverbosity0,
         log_file: None,
     };
 
-    let pipe_name = format!("hapi_rbx_{id}");
-    let session = Session::new_pipe(pipe_name, options).unwrap();
-    let session_id = id.to_string();
+    let session = Session::new(options)?;
+    let session_id = session.session_id;
 
     let session_info = session.session_info().unwrap();
 
@@ -32,11 +38,11 @@ pub async fn connect(Extension(registry): Extension<AMSessionRegistry>) -> impl 
 
     log::debug!("Created new session with ID {}", session_id);
 
-    (
+    Ok((
         StatusCode::CREATED,
         Json(ConnectResponse {
             id: session_id,
             session_info,
         }),
-    )
+    ))
 }

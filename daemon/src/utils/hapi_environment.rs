@@ -30,8 +30,10 @@ fn get_houdini_install() -> PathBuf {
 /// It also requires some libraries to exist on the PATH, so PATH is updated
 /// also.
 pub fn set_hapi_env_variables() -> anyhow::Result<()> {
+    println!("AAAA");
     #[cfg(target_os = "macos")]
     {
+        println!("bbbbb");
         let install_path = get_houdini_install()
             .canonicalize()
             .context("Failed to canonicalize install path")?;
@@ -55,6 +57,8 @@ pub fn set_hapi_env_variables() -> anyhow::Result<()> {
         std::env::set_var("HHP", &houdini_path.join("./python3.9libs"));
         std::env::set_var("HT", &hfs_path.join("./toolkit"));
         std::env::set_var("HSB", &hsb_path);
+
+        std::env::set_var("DYLD_LIBRARY_PATH", &hapi_library_path);
 
         let path = std::env::var("PATH").unwrap_or_default();
         std::env::set_var(

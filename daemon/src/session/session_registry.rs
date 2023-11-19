@@ -8,6 +8,8 @@ use super::Session;
 
 pub type AMSessionRegistry = Arc<Mutex<SessionRegistry>>;
 
+/// Persists sessions in memory for the lifetime of the application. Allows
+/// sessions to be retrieved by their ID when new requests are made.
 pub struct SessionRegistry {
     sessions: Vec<Session>,
 }
