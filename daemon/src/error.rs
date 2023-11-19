@@ -3,7 +3,9 @@ use serde::Serialize;
 use serde_json::json;
 use thiserror::Error;
 
-use crate::{asset::AssetError, routes::OpenAssetError, session::SessionError};
+use crate::{
+    asset::AssetError, routes::OpenAssetError, session::SessionError, utils::EnvironmentError,
+};
 
 #[derive(Debug, Error, Serialize)]
 #[serde(untagged)]
@@ -12,6 +14,7 @@ pub enum AppError {
     AssetError(AssetError),
     OpenAssetError(OpenAssetError),
     SessionError(SessionError),
+    EnvironmentError(EnvironmentError),
 }
 
 /// Macro to automate the implementation of the `From` trait for variants of the
@@ -34,14 +37,16 @@ macro_rules! from_variant {
     };
 }
 
-from_variant!(AssetError, OpenAssetError, SessionError);
+from_variant!(AssetError, OpenAssetError, SessionError, EnvironmentError);
 
 impl IntoResponse for AppError {
     fn into_response(self) -> axum::response::Response {
         let status = match self {
-            Self::AssetError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Self::OpenAssetError(_) => StatusCode::BAD_REQUEST,
+
+            Self::AssetError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Self::SessionError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::EnvironmentError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         };
 
         let body = Json(json!({

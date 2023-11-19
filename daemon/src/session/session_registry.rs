@@ -1,7 +1,6 @@
 use std::sync::Arc;
 
 use futures::lock::Mutex;
-
 use uuid::Uuid;
 
 use super::Session;

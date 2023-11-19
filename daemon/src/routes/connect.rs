@@ -3,10 +3,9 @@ use hapi_rs::session::StatusVerbosity;
 use serde::Serialize;
 use uuid::Uuid;
 
-use crate::{
-    error::AppError,
-    session::{AMSessionRegistry, Session, SessionInfo, SessionType},
-};
+use crate::session::{AMSessionRegistry, Session, SessionInfo, SessionType};
+
+use super::AppResponse;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -17,7 +16,7 @@ pub struct ConnectResponse {
 
 pub async fn connect(
     Extension(registry): Extension<AMSessionRegistry>,
-) -> Result<(StatusCode, Json<ConnectResponse>), AppError> {
+) -> AppResponse<ConnectResponse> {
     let id = Uuid::new_v4();
 
     let options = crate::session::Options {
@@ -31,7 +30,7 @@ pub async fn connect(
     let session = Session::new(options)?;
     let session_id = session.session_id;
 
-    let session_info = session.session_info().unwrap();
+    let session_info = session.session_info()?;
 
     let mut registry = registry.lock().await;
     registry.add_session(session);

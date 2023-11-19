@@ -1,6 +1,16 @@
 use std::path::PathBuf;
 
-use anyhow::Context;
+use serde::Serialize;
+use thiserror::Error;
+
+#[derive(Debug, Error, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum EnvironmentError {
+    #[error("Failed to set HAPI environment variables")]
+    EnvironmentFsError,
+}
+
+type Result<T> = std::result::Result<T, EnvironmentError>;
 
 #[cfg(any(target_os = "windows", target_os = "linux"))]
 compile_error!("Windows and Linux are not supported yet");
@@ -29,18 +39,16 @@ fn get_houdini_install() -> PathBuf {
 /// HAPI expects some environment variables to be set in order to work properly.
 /// It also requires some libraries to exist on the PATH, so PATH is updated
 /// also.
-pub fn set_hapi_env_variables() -> anyhow::Result<()> {
-    println!("AAAA");
+pub fn set_hapi_env_variables() -> Result<()> {
     #[cfg(target_os = "macos")]
     {
-        println!("bbbbb");
         let install_path = get_houdini_install()
             .canonicalize()
-            .context("Failed to canonicalize install path")?;
+            .map_err(|_| EnvironmentError::EnvironmentFsError)?;
         let frameworks_path = install_path
             .join(HOUDINI_FRAMEWORKS_PATH)
             .canonicalize()
-            .context("Failed to canonicalize frameworks path")?;
+            .map_err(|_| EnvironmentError::EnvironmentFsError)?;
 
         let hfs_path = frameworks_path.join(HFS_PATH);
         let hapi_bin_path = frameworks_path.join(HAPI_BIN_PATH);

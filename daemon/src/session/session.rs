@@ -5,7 +5,6 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use anyhow::Context;
 use hapi_rs::session::{
     self, ConnectionType, License, Session as HoudiniSession, SessionOptionsBuilder,
     SessionType as HapiSessionType, StatusVerbosity,
@@ -33,6 +32,14 @@ pub enum SessionError {
     StartSocketServerError,
     #[error("Failed to connect to Houdini socket server")]
     ConnectToSocketError,
+
+    #[error("Failed to get license type")]
+    GetLicenseTypeError,
+
+    #[error("Failed to cleanup HAPI session")]
+    CleanupError,
+    #[error("Failed to remove pipe file")]
+    RemovePipeFileError,
 
     #[error(transparent)]
     NewAssetError(AssetError),
@@ -139,8 +146,12 @@ impl Session {
         })
     }
 
-    pub fn session_info(&self) -> anyhow::Result<SessionInfo> {
-        let license_type = match self.houdini_session.get_license_type()? {
+    pub fn session_info(&self) -> Result<SessionInfo> {
+        let license_type = self
+            .houdini_session
+            .get_license_type()
+            .map_err(|_| SessionError::GetLicenseTypeError)?;
+        let license_type = match license_type {
             License::LicenseNone => "None",
             License::HoudiniEngine => "Houdini Engine",
             License::LicenseHoudini => "Houdini",
@@ -175,14 +186,14 @@ impl Session {
     }
 
     /// Cleans up the session, closing the HAPI session and removing any temporary files.
-    pub fn cleanup(&self) -> anyhow::Result<()> {
+    pub fn cleanup(&self) -> Result<()> {
         self.houdini_session
             .cleanup()
-            .context("Failed to cleanup HAPI session")?;
+            .map_err(|_| SessionError::CleanupError)?;
 
         if let Some(pipe_path) = &self.pipe_path {
             if pipe_path.exists() {
-                fs::remove_file(pipe_path).context("Failed to remove pipe file")?;
+                fs::remove_file(pipe_path).map_err(|_| SessionError::RemovePipeFileError)?;
             }
         }
 
