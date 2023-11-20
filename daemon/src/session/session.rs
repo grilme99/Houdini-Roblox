@@ -15,7 +15,7 @@ use uuid::Uuid;
 
 use crate::{
     asset::{Asset, AssetError},
-    utils::set_hapi_env_variables,
+    utils::set_hapi_env_variables, state::{DaemonState, StateError},
 };
 
 #[derive(Debug, Error, Serialize)]
@@ -43,6 +43,8 @@ pub enum SessionError {
 
     #[error(transparent)]
     NewAssetError(AssetError),
+    #[error(transparent)]
+    StateError(StateError)
 }
 
 type Result<T> = std::result::Result<T, SessionError>;
@@ -72,6 +74,10 @@ pub struct SessionInfo {
 pub struct Session {
     pub session_id: Uuid,
 
+    // TODO: This isn't technically a singleton, and if multiple sessions are
+    //  open then they could overwrite each others state.
+    pub state: DaemonState,
+
     houdini_session: HoudiniSession,
     pipe_path: Option<PathBuf>,
     asset_db: HashMap<Uuid, Asset>,
@@ -80,6 +86,8 @@ pub struct Session {
 impl Session {
     pub fn new(options: Options) -> Result<Self> {
         set_hapi_env_variables().map_err(|_| SessionError::SetHAPIEnvError)?;
+
+        let state = DaemonState::new().map_err(SessionError::StateError)?;
 
         let session_id = Uuid::new_v4();
         log::debug!("Starting session with ID {}", session_id);
@@ -139,6 +147,7 @@ impl Session {
 
         Ok(Self {
             session_id,
+            state,
 
             houdini_session,
             pipe_path,

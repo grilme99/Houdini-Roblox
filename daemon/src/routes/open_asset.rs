@@ -1,3 +1,5 @@
+use std::{path::PathBuf, str::FromStr};
+
 use axum::{http::StatusCode, Extension, Json};
 use serde::Serialize;
 use thiserror::Error;
@@ -7,6 +9,7 @@ use crate::{
     error::AppError,
     message::{AppMsgReceiver, AppMsgTransmitter, ApplicationMessage, OpenFileSelectorOptions},
     session::AMSessionRegistry,
+    state::StateError,
     utils::ExtractSessionId,
 };
 
@@ -17,6 +20,8 @@ pub enum OpenAssetError {
     NoSession,
     #[error("No file selected")]
     NoFileSelected,
+    #[error(transparent)]
+    StateError(StateError),
 }
 
 #[derive(Debug, Serialize)]
@@ -39,10 +44,16 @@ pub async fn open_asset(
     if let Some(session) = registry.get_session_mut(&session_id) {
         log::debug!("Opening new asset");
 
+        let default = PathBuf::from_str("/").unwrap();
+        let last_directory = session
+            .state
+            .last_opened_directory()
+            .unwrap_or_else(|| &default);
+
         let options = OpenFileSelectorOptions {
             name: "Open HDA",
             filters: vec![("HDAs", &["otl", "hda", "otllc", "otlnc", "hdanc"])],
-            directory: "/".into(),
+            directory: last_directory.to_owned(),
         };
 
         tx_in
@@ -51,6 +62,13 @@ pub async fn open_asset(
             .unwrap();
 
         if let ApplicationMessage::FileSelected(Some(file)) = rx_out.recv().await.unwrap() {
+            if let Some(parent) = file.parent() {
+                session
+                    .state
+                    .set_last_opened_directory(parent.to_owned())
+                    .map_err(OpenAssetError::StateError)?;
+            }
+
             let asset_id = session.load_asset_file(&file)?;
             let asset = session.get_asset(asset_id).unwrap();
 
