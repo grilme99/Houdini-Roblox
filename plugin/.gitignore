@@ -1,0 +1,17 @@
+# Dependencies
+Packages/
+
+# Builds
+dist/
+
+# Rbxm model files
+**/*.rbx[lm]*
+
+# Misc OS files
+.DS_Store
+
+# Local IDE settings
+.vscode/*
+.idea/
+sourcemap.json
+!.vscode/settings.json

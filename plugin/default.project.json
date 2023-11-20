@@ -1,0 +1,9 @@
+{
+  "name": "HoudiniEngineForRoblox",
+  "tree": {
+    "$path": "dist/",
+    "Packages": {
+      "$path": "Packages/"
+    }
+  }
+}
