@@ -35,8 +35,8 @@ function ToolbarButton:createButton()
 
 	self.button = toolbar:CreateButton(id, tooltip, icon, title)
 
-	self.button.ClickableWhenViewportHidden = (props.ClickableWhenViewportHidden == nil) and true
-		or props.ClickableWhenViewportHidden
+	self.button.ClickableWhenViewportHidden = (props.clickableWhenViewportHidden == nil) and true
+		or props.clickableWhenViewportHidden
 
 	self.button.Click:Connect(function()
 		onClick()
@@ -60,7 +60,7 @@ function ToolbarButton:updateButton()
 	if enabled ~= nil then
 		self.button.Enabled = enabled
 	end
-	local icon = props.Icon or ""
+	local icon = props.icon or ""
 	if icon ~= self.button.Icon then
 		self.button.Icon = icon
 	end

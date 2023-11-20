@@ -6,6 +6,8 @@ local ToolbarButton = require("@Components/Plugin/ToolbarButton")
 local DockWidget = require("@Components/Plugin/DockWidget")
 
 local ContextProvider = require("@Src/ContextProvider")
+local TarmacAssets = require("@Src/TarmacAssets")
+local TarmacAssetUtils = require("@Src/TarmacAssetUtils")
 
 local e = React.createElement
 local useState = React.useState
@@ -28,16 +30,16 @@ local function MainPlugin(props: Props)
 		plugin = plugin,
 	}, {
 		HoudiniToolbar = e(Toolbar, {
-            plugin = plugin,
+			plugin = plugin,
 			title = "Houdini Engine",
 			renderButtons = function(toolbar)
 				return {
 					Toggle = e(ToolbarButton, {
-                        plugin = plugin,
+						plugin = plugin,
 						toolbar = toolbar,
 						active = enabled,
 						title = "Houdini Engine",
-						icon = "rbxasset://textures/DeveloperStorybook/ToolbarIcon.png",
+						icon = TarmacAssetUtils.resolveTarmacAsset(TarmacAssets.HoudiniEngineBadge).image,
 						onClick = toggleEnabled,
 					}),
 				}
@@ -46,7 +48,7 @@ local function MainPlugin(props: Props)
 
 		HoudiniWidget = e(DockWidget, {
 			plugin = plugin,
-		    enabled = enabled,
+			enabled = enabled,
 			title = "Houdini Engine",
 			id = plugin.Name,
 			zIndexBehavior = Enum.ZIndexBehavior.Sibling,
@@ -64,11 +66,11 @@ local function MainPlugin(props: Props)
 				setEnabled(rbx.Enabled)
 			end,
 		}, {
-		    Frame = e("Frame", {
-		        Size = UDim2.fromScale(1, 1),
-		        BackgroundColor3 = Color3.fromRGB(255, 0, 0),
-		    })
-		})
+			Frame = e("Frame", {
+				Size = UDim2.fromScale(1, 1),
+				BackgroundColor3 = Color3.fromRGB(255, 0, 0),
+			}),
+		}),
 	})
 end
 

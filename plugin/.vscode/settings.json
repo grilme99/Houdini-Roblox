@@ -8,6 +8,7 @@
     "@Hooks": "src/Src/Hooks",
     "@Contexts": "src/Src/Contexts",
     "@Systems": "src/Src/Systems",
-    "@Components": "src/Src/Components"
+    "@Components": "src/Src/Components",
+    "@Utils": "src/Src/Utils"
   }
 }

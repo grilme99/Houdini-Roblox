@@ -1,0 +1,15 @@
+name = "HoudiniEngineForRoblox"
+
+[[inputs]]
+glob = "assets/pack/**/*.png"
+packable = true
+codegen = true
+codegen-path = "src/Src/TarmacAssets.lua"
+codegen-base-path = "assets/pack"
+
+[[inputs]]
+glob = "assets/no-pack/**/*.png"
+packable = false
+codegen = true
+codegen-path = "src/Src/TarmacAssets.lua"
+codegen-base-path = "assets/no-pack"
