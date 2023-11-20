@@ -1,0 +1,4 @@
+std = "roblox"
+
+[rules]
+incorrect_standard_library_use = "allow"

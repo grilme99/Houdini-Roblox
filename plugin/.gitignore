@@ -14,4 +14,5 @@ dist/
 .vscode/*
 .idea/
 sourcemap.json
+src-sourcemap.json
 !.vscode/settings.json

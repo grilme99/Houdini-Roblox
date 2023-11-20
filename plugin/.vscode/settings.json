@@ -1,8 +1,9 @@
 {
   "luau-lsp.completion.imports.suggestRequires": false,
   "luau-lsp.completion.imports.separateGroupsWithLine": true,
-  "luau-lsp.sourcemap.rojoProjectFile": "default.project.json",
+  "luau-lsp.sourcemap.rojoProjectFile": "sourcemap.project.json",
   "luau-lsp.require.directoryAliases": {
-    "@Packages": "Packages"
+    "@Packages": "Packages",
+    "@Src": "src/Src",
   }
 }
