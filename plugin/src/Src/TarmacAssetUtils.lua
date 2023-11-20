@@ -8,7 +8,7 @@ type TarmacAsset = string | Image | (dpi: number) -> (string | Image)
 
 local TarmacAssetUtils = {}
 
-function TarmacAssetUtils.resolveTarmacAsset(asset: TarmacAsset): Image
+function TarmacAssetUtils.ResolveTarmacAsset(asset: TarmacAsset): Image
     if type(asset) == "string" then
         return {
             image = asset,
@@ -16,7 +16,7 @@ function TarmacAssetUtils.resolveTarmacAsset(asset: TarmacAsset): Image
     elseif type(asset) == "table" then
         return asset
     else
-        return TarmacAssetUtils.resolveTarmacAsset(asset(DpiProvider.GetDpiScale()))
+        return TarmacAssetUtils.ResolveTarmacAsset(asset(DpiProvider.GetDpiScale()))
     end
 end
 

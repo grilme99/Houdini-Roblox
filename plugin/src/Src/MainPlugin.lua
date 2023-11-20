@@ -11,6 +11,8 @@ local ContextProvider = require("@Src/ContextProvider")
 local TarmacAssets = require("@Src/TarmacAssets")
 local TarmacAssetUtils = require("@Src/TarmacAssetUtils")
 
+local useI18n = require("@Hooks/useI18n")
+
 local e = React.createElement
 local useState = React.useState
 
@@ -28,20 +30,22 @@ local function MainPlugin(props: Props)
 		end)
 	end
 
+	local pluginName = useI18n("General.HoudiniEngine")
+
 	return e(ContextProvider, {
 		plugin = plugin,
 	}, {
 		HoudiniToolbar = e(Toolbar, {
 			plugin = plugin,
-			title = "Houdini Engine",
+			title = pluginName,
 			renderButtons = function(toolbar)
 				return {
 					Toggle = e(ToolbarButton, {
 						plugin = plugin,
 						toolbar = toolbar,
 						active = enabled,
-						title = "Houdini Engine",
-						icon = TarmacAssetUtils.resolveTarmacAsset(TarmacAssets.HoudiniEngineBadge).image,
+						title = pluginName,
+						icon = TarmacAssetUtils.ResolveTarmacAsset(TarmacAssets.HoudiniEngineBadge).image,
 						onClick = toggleEnabled,
 					}),
 				}
@@ -51,7 +55,7 @@ local function MainPlugin(props: Props)
 		HoudiniWidget = e(DockWidget, {
 			plugin = plugin,
 			enabled = enabled,
-			title = "Houdini Engine",
+			title = pluginName,
 			id = plugin.Name,
 			zIndexBehavior = Enum.ZIndexBehavior.Sibling,
 			initialDockState = Enum.InitialDockState.Right,

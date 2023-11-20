@@ -4,6 +4,12 @@
     "$path": "dist/",
     "Packages": {
       "$path": "Packages/"
+    },
+    "Localization": {
+      "$className": "Folder",
+      "SourceStrings": {
+        "$path": "src/Localization/SourceStrings.csv"
+      }
     }
   }
 }

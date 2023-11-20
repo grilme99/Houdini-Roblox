@@ -14,7 +14,7 @@ process-watch: sourcemap
 
 sourcemap:
     mkdir -p dist/
-    rojo sourcemap sourcemap.project.json -o {{SOURCEMAP}}
+    rojo sourcemap sourcemap.project.json -o {{SOURCEMAP}} --include-non-scripts
 
 install-packages:
     wally install

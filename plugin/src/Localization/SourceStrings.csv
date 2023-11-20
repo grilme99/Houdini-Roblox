@@ -1,0 +1,7 @@
+Key,Source
+General.Houdini,Houdini
+General.HoudiniEngine,Houdini Engine
+General.ToolbarButtonTooltip,Open the Houdini Engine UI
+Offline.Title,Daemon is offline
+Offline.Message,The Houdini Engine daemon is not running. Please start the daemon to use Houdini Engine.
+Offline.Countdown,(Automatically retrying in {1:int}...)
