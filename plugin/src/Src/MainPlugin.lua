@@ -5,6 +5,8 @@ local Toolbar = require("@Components/Plugin/Toolbar")
 local ToolbarButton = require("@Components/Plugin/ToolbarButton")
 local DockWidget = require("@Components/Plugin/DockWidget")
 
+local MainView = require("@Components/App/MainView")
+
 local ContextProvider = require("@Src/ContextProvider")
 local TarmacAssets = require("@Src/TarmacAssets")
 local TarmacAssetUtils = require("@Src/TarmacAssetUtils")
@@ -66,10 +68,7 @@ local function MainPlugin(props: Props)
 				setEnabled(rbx.Enabled)
 			end,
 		}, {
-			Frame = e("Frame", {
-				Size = UDim2.fromScale(1, 1),
-				BackgroundColor3 = Color3.fromRGB(255, 0, 0),
-			}),
+			MainView = e(MainView, {})
 		}),
 	})
 end
