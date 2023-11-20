@@ -6,7 +6,11 @@
         "name": "path",
         "sources": {
           "@Packages": "Packages",
-          "@Src": "src/Src"
+          "@Src": "src/Src",
+          "@Hooks": "src/Src/Hooks",
+          "@Contexts": "src/Src/Contexts",
+          "@Systems": "src/Src/Systems",
+          "@Components": "src/Src/Components"
         }
       },
       "target": {
