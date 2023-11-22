@@ -15,7 +15,7 @@ function DpiProvider.GetDpiScale(): number
 		or StudioService:GetClassIcon("Part").Image:match("(@.-)%.PNG$")
 		or ""
 
-    _cachedDpi = tonumber(dpi) or 1
+    _cachedDpi = tonumber(dpi) or 2
 	return _cachedDpi :: any
 end
 

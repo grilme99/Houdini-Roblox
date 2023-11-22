@@ -1,6 +1,10 @@
 local React = require("@Packages/React")
 local ReactRoblox = require("@Packages/ReactRoblox")
 
+local WidgetDimensions = require("@Contexts/WidgetDimensions")
+
+local e = React.createElement
+
 local expectsRestoredMessage = [[
 DockWidget expects an OnWidgetRestored function if ShouldRestore is true.
 This DockWidget may restore as enabled, so we need to listen for that!]]
@@ -32,7 +36,7 @@ function DockWidget:createWidget()
 	local props = self.props
 	local title = props.title
 	local onClose = props.onClose
-	
+
 	local plugin = props.plugin
 	local minSize = props.minSize or Vector2.new(0, 0)
 	local shouldRestore = props.shouldRestore or false
@@ -54,7 +58,7 @@ function DockWidget:createWidget()
 		minSize.Y
 	)
 
-	local widget = plugin:CreateDockWidgetPluginGui(pluginId, info)
+	local widget: DockWidgetPluginGui = plugin:CreateDockWidgetPluginGui(pluginId, info)
 
 	assert(onClose, "PluginWidget expects an OnClose function.")
 
@@ -102,6 +106,13 @@ function DockWidget:createWidget()
 		end
 	end)
 
+	self.state.widgetSize = widget.AbsoluteSize
+	self.widgetSizeChangedConnection = widget:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+		self:setState({
+			widgetSize = widget.AbsoluteSize,
+		})
+	end)
+
 	self.widget = widget
 
 	-- Force a rerender now that we have the widget
@@ -145,7 +156,12 @@ function DockWidget:render()
 		return nil
 	end
 
-	return ReactRoblox.createPortal(self.props.children, self.widget)
+	return ReactRoblox.createPortal(
+		e(WidgetDimensions.Provider, {
+			value = self.state.widgetSize,
+		}, self.props.children),
+		self.widget
+	)
 end
 
 function DockWidget:willUnmount()
@@ -154,6 +170,11 @@ function DockWidget:willUnmount()
 	if self.widgetEnabledChangedConnection then
 		self.widgetEnabledChangedConnection:Disconnect()
 		self.widgetEnabledChangedConnection = nil
+	end
+
+	if self.widgetSizeChangedConnection then
+		self.widgetSizeChangedConnection:Disconnect()
+		self.widgetSizeChangedConnection = nil
 	end
 
 	if self.windowFocusReleasedConnection then

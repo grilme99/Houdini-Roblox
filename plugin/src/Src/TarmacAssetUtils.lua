@@ -1,17 +1,19 @@
 local DpiProvider = require("@Utils/DpiProvider")
 
-export type Image = {
-    image: string,
+export type ResolvedImage = {
+    Image: string,
+    ImageRectOffset: Vector2?,
+    ImageRectSize: Vector2?,
 }
 
-type TarmacAsset = string | Image | (dpi: number) -> (string | Image)
+export type TarmacAsset = string | ResolvedImage | (dpi: number) -> (string | ResolvedImage)
 
 local TarmacAssetUtils = {}
 
-function TarmacAssetUtils.ResolveTarmacAsset(asset: TarmacAsset): Image
+function TarmacAssetUtils.ResolveTarmacAsset(asset: TarmacAsset): ResolvedImage
     if type(asset) == "string" then
         return {
-            image = asset,
+            Image = asset,
         }
     elseif type(asset) == "table" then
         return asset

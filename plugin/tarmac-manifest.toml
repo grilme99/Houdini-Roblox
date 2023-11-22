@@ -1,3 +1,40 @@
 [inputs."assets/no-pack/HoudiniEngineBadge.png"]
 hash = "5c492f5e0ea700493e597eeb4e4271e032e1b9839e1f422a274486562906e9f8"
+id = 15429695742
 packable = false
+
+[inputs."assets/pack/Navbar/Assets.png"]
+hash = "b6994b9b925215456456a1638c397225ec536b92db6f740763e1d7b32fa720c3"
+id = 15431563463
+slice = [[0, 0], [18, 15]]
+packable = true
+
+[inputs."assets/pack/Navbar/Assets@2x.png"]
+hash = "5e30e54aaf98d4abf3422848ba3d761e2c9e714c5290aa4a3f4a45e8d1d0d666"
+id = 15431563615
+slice = [[0, 0], [36, 30]]
+packable = true
+
+[inputs."assets/pack/Navbar/Properties.png"]
+hash = "ee0073828c36740b28055f31b23e67b6dd313e3e8030de7408374245784f2aed"
+id = 15431563463
+slice = [[19, 0], [35, 16]]
+packable = true
+
+[inputs."assets/pack/Navbar/Properties@2x.png"]
+hash = "dc746562e34b818342ea57c9198f8af48ea9673f59d3add6a3c0911cd28bda83"
+id = 15431563615
+slice = [[37, 0], [69, 32]]
+packable = true
+
+[inputs."assets/pack/Navbar/Settings.png"]
+hash = "87afeead4fc654d9850bbfbe6a2fa58b40a91849366fdeb6828726d6058c82ff"
+id = 15431563463
+slice = [[0, 16], [16, 32]]
+packable = true
+
+[inputs."assets/pack/Navbar/Settings@2x.png"]
+hash = "1fc4036fc7ccd782af46ee41f786a4fddb693434b113e3b284738ef2aa802631"
+id = 15431563615
+slice = [[0, 31], [31, 63]]
+packable = true

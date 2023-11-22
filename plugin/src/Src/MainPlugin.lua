@@ -31,6 +31,7 @@ local function MainPlugin(props: Props)
 	end
 
 	local pluginName = useI18n("General.HoudiniEngine")
+	local tooltip = useI18n("General.ToolbarButtonTooltip")
 
 	return e(ContextProvider, {
 		plugin = plugin,
@@ -45,6 +46,8 @@ local function MainPlugin(props: Props)
 						toolbar = toolbar,
 						active = enabled,
 						title = pluginName,
+						tooltip = tooltip,
+						clickableWhenViewportHidden = true,
 						icon = TarmacAssetUtils.ResolveTarmacAsset(TarmacAssets.HoudiniEngineBadge).image,
 						onClick = toggleEnabled,
 					}),
