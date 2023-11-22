@@ -6,6 +6,7 @@
   "luau-lsp.sourcemap.includeNonScripts": true,
   "luau-lsp.require.directoryAliases": {
     "@Packages": "Packages",
+    "@Vendor": "src/Vendor",
     "@Src": "src/Src",
     "@Hooks": "src/Src/Hooks",
     "@Contexts": "src/Src/Contexts",

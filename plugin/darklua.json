@@ -6,6 +6,7 @@
         "name": "path",
         "sources": {
           "@Packages": "Packages",
+          "@Vendor": "src/Vendor",
           "@Src": "src/Src",
           "@Hooks": "src/Src/Hooks",
           "@Contexts": "src/Src/Contexts",

@@ -1,6 +1,8 @@
 local React = require("@Packages/React")
 local ReactRoblox = require("@Packages/ReactRoblox")
 
+local ReactNavigation = require("@Vendor/ReactNavigation")
+
 local Toolbar = require("@Components/Plugin/Toolbar")
 local ToolbarButton = require("@Components/Plugin/ToolbarButton")
 local DockWidget = require("@Components/Plugin/DockWidget")
@@ -48,7 +50,7 @@ local function MainPlugin(props: Props)
 						title = pluginName,
 						tooltip = tooltip,
 						clickableWhenViewportHidden = true,
-						icon = TarmacAssetUtils.ResolveTarmacAsset(TarmacAssets.HoudiniEngineBadge).image,
+						icon = TarmacAssetUtils.ResolveTarmacAsset(TarmacAssets.HoudiniEngineBadge).Image,
 						onClick = toggleEnabled,
 					}),
 				}
