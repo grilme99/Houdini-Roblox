@@ -11,12 +11,8 @@ local DaemonBridge = {}
 DaemonBridge.IsConnectionOpen = false
 DaemonBridge.OnConnectionChanged = Signal.new() :: Signal<boolean>
 
-function DaemonBridge.OpenConnection()
-    
-end
+function DaemonBridge.OpenConnection() end
 
-function DaemonBridge.CloseConnection()
-    
-end
+function DaemonBridge.CloseConnection() end
 
 return DaemonBridge

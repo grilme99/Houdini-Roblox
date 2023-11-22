@@ -12,25 +12,25 @@ local Main = script.Parent.Parent
 local root: ReactRoblox.RootType
 
 local function Init()
-    plugin.Name = Main.Name
+	plugin.Name = Main.Name
 
-    local mainPlugin = e(MainPlugin, {
-        plugin = plugin,
-    })
+	local mainPlugin = e(MainPlugin, {
+		plugin = plugin,
+	})
 
-    root = ReactRoblox.createRoot(Instance.new("Folder"))
-    root:render(mainPlugin)
+	root = ReactRoblox.createRoot(Instance.new("Folder"))
+	root:render(mainPlugin)
 end
 
 plugin.Unloading:Connect(function()
-    if DaemonBridge.IsConnectionOpen then
-        DaemonBridge.CloseConnection()
-    end
+	if DaemonBridge.IsConnectionOpen then
+		DaemonBridge.CloseConnection()
+	end
 
-    if root then
-        root:unmount()
-        root = nil :: any
-    end
+	if root then
+		root:unmount()
+		root = nil :: any
+	end
 end)
 
 Init()

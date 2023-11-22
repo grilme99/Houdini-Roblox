@@ -35,17 +35,19 @@ local function NavbarButton(props: Props)
 	local theme = useStudioTheme()
 	local isDark = ThemeUtils.IsDarkerTheme(theme)
 
-    local hovering, setHovering = useState(false)
+	local hovering, setHovering = useState(false)
 
 	local borderWidth = 2
 	local borderColor = theme:GetColor(Enum.StudioStyleGuideColor.Border)
 
-    local resolvedIcon = TarmacAssetUtils.ResolveTarmacAsset(icon)
+	local resolvedIcon = TarmacAssetUtils.ResolveTarmacAsset(icon)
 
 	local xPosition = (index - 1) * buttonWidth
 
 	local selectedColor = if isDark then Color3.new(1, 1, 1) else Color3.fromRGB(0, 162, 255)
-	local contentColor = if selected or hovering then selectedColor else theme:GetColor(Enum.StudioStyleGuideColor.TitlebarText)
+	local contentColor = if selected or hovering
+		then selectedColor
+		else theme:GetColor(Enum.StudioStyleGuideColor.TitlebarText)
 
 	return e("ImageButton", {
 		Position = UDim2.fromOffset(xPosition, 0),
@@ -54,12 +56,12 @@ local function NavbarButton(props: Props)
 		AutoButtonColor = false,
 		BorderSizePixel = 0,
 		[React.Event.Activated] = onClick,
-        [React.Event.MouseEnter] = function()
-            setHovering(true)
-        end,
-        [React.Event.MouseLeave] = function()
-            setHovering(false)
-        end,
+		[React.Event.MouseEnter] = function()
+			setHovering(true)
+		end,
+		[React.Event.MouseLeave] = function()
+			setHovering(false)
+		end,
 	}, {
 		BottomBar = not selected and e("Frame", {
 			AnchorPoint = Vector2.new(0.5, 1),
@@ -109,9 +111,9 @@ local function NavbarButton(props: Props)
 				Size = UDim2.fromOffset(iconSize.X, iconSize.Y),
 				BackgroundTransparency = 1,
 				Image = resolvedIcon.Image,
-                ImageRectOffset = resolvedIcon.ImageRectOffset,
-                ImageRectSize = resolvedIcon.ImageRectSize,
-                ImageColor3 = contentColor,
+				ImageRectOffset = resolvedIcon.ImageRectOffset,
+				ImageRectSize = resolvedIcon.ImageRectSize,
+				ImageColor3 = contentColor,
 				LayoutOrder = 1,
 			}),
 

@@ -8,25 +8,25 @@ local useState = React.useState
 local useContext = React.useContext
 
 export type DaemonContext = {
-	connected: boolean,
+	isConnected: boolean,
 }
 
 local DEFAULT: DaemonContext = {
-	connected = false,
+	isConnected = false,
 }
 
 local Daemon = {}
 local DaemonContext = React.createContext(DEFAULT)
 
 local function Provider(props: React.ElementProps<any>)
-	local connected, setConnected = useState(false)
+	local isConnected, setIsConnected = useState(false)
 
 	useSignal(DaemonBridge.OnConnectionChanged, function(isConnected: boolean)
-		setConnected(isConnected)
+		setIsConnected(isConnected)
 	end)
 
 	local context: DaemonContext = {
-		connected = connected,
+		isConnected = isConnected,
 	}
 
 	return e(DaemonContext.Provider, {

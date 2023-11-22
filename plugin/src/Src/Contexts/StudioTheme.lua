@@ -30,7 +30,7 @@ end
 StudioTheme.Provider = StudioThemeProvider
 
 local function useStudioTheme(): StudioTheme
-    return useContext(StudioThemeContext)
+	return useContext(StudioThemeContext)
 end
 StudioTheme.useStudioTheme = useStudioTheme
 

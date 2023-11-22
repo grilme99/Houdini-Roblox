@@ -4,7 +4,7 @@ SOURCEMAP := "sourcemap.json"
 
 dev:
     just install-packages
-    rojo build default.project.json --watch --plugin HoudiniEngineForRoblox.rbxm & just process-watch
+    rojo build --watch --plugin HoudiniEngineForRoblox.rbxm & just process-watch
 
 process: sourcemap
     darklua process -c darklua.json src/ dist/

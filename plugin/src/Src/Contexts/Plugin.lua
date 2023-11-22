@@ -8,7 +8,7 @@ local PluginContext = React.createContext(nil :: any)
 Plugin.Provider = PluginContext.Provider
 
 local function usePlugin(): Plugin
-    return useContext(PluginContext)
+	return useContext(PluginContext)
 end
 Plugin.usePlugin = usePlugin
 

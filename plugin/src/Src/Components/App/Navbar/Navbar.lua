@@ -17,7 +17,7 @@ local function Navbar()
 	local widgetDimensions = useWidgetDimensions()
 
 	local buttonCount = #NavbarConstants.Buttons
-	local buttonWidth = widgetDimensions.X / buttonCount 
+	local buttonWidth = widgetDimensions.X / buttonCount
 
 	local maxTextWidth = 0
 	for _, button in NavbarConstants.Buttons do

@@ -75,7 +75,7 @@ local function MainPlugin(props: Props)
 				setEnabled(rbx.Enabled)
 			end,
 		}, {
-			MainView = e(MainView, {})
+			MainView = e(MainView, {}),
 		}),
 	})
 end
