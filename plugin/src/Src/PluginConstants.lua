@@ -10,6 +10,7 @@ PluginConstants.Font = table.freeze({
 PluginConstants.RootScreen = table.freeze({
 	Connect = "Connect",
 	Connected = "Connected",
+	Settings = "Settings",
 })
 
 PluginConstants.ConnectScreens = table.freeze({

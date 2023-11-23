@@ -1,5 +1,8 @@
 local React = require("@Packages/React")
 
+local ReactNavigation = require("@Vendor/ReactNavigation/init")
+local useNavigation = ReactNavigation.useNavigation
+
 local TarmacAssets = require("@Src/TarmacAssets")
 local TarmacAssetUtils = require("@Src/TarmacAssetUtils")
 local ResolveTarmacAsset = TarmacAssetUtils.ResolveTarmacAsset
@@ -25,6 +28,8 @@ local DEFAULT_ADDRESS = "localhost"
 local DEFAULT_PORT = "37246"
 
 local function FormScreen()
+	local navigation = useNavigation()
+
 	local theme = useStudioTheme()
 	local isDark = ThemeUtils.IsDarkerTheme(theme)
 
@@ -55,6 +60,10 @@ local function FormScreen()
 				VerticalAlignment = Enum.VerticalAlignment.Top,
 				SortOrder = Enum.SortOrder.LayoutOrder,
 				Padding = UDim.new(0, 28),
+			}),
+
+			SizeConstraint = e("UISizeConstraint", {
+				MaxSize = Vector2.new(420, math.huge),
 			}),
 
 			Logo = e("Frame", {
@@ -176,7 +185,7 @@ local function FormScreen()
 						disabled = false,
 						loading = false,
 						onClick = function()
-							print("Settings")
+							navigation.navigate(PluginConstants.RootScreen.Settings)
 						end,
 					}),
 				}),

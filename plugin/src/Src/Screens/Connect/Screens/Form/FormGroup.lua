@@ -86,6 +86,7 @@ local function FormGroup(props: Props)
 				Text = "",
 				TextColor3 = theme:GetColor(Enum.StudioStyleGuideColor.MainText),
 				TextSize = 18,
+				ClipsDescendants = true,
 				TextXAlignment = if centerText then Enum.TextXAlignment.Center else Enum.TextXAlignment.Left,
                 [ReactRoblox.Change.Text] = function(rbx: TextBox)
                     local text = rbx.Text
