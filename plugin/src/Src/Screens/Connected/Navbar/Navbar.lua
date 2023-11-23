@@ -3,8 +3,8 @@ local React = require("@Packages/React")
 local PluginConstants = require("@Src/PluginConstants")
 local Font = PluginConstants.Font
 
-local NavbarConstants = require("@Src/Components/App/Navbar/NavbarConstants")
-local NavbarButton = require("@Src/Components/App/Navbar/Button")
+local NavbarConstants = require("@Src/Screens/Connected/Navbar/NavbarConstants")
+local NavbarButton = require("@Src/Screens/Connected/Navbar/Button")
 
 local WidgetDimensions = require("@Src/Contexts/WidgetDimensions")
 local useWidgetDimensions = WidgetDimensions.useWidgetDimensions

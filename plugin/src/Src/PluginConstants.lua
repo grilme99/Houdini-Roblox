@@ -11,6 +11,7 @@ PluginConstants.RootScreen = table.freeze({
 	Connect = "Connect",
 	Connected = "Connected",
 	Settings = "Settings",
+	Error = "Error",
 })
 
 PluginConstants.ConnectScreens = table.freeze({

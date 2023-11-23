@@ -1,12 +1,12 @@
 local React = require("@Packages/React")
 
-local Navbar = require("@Components/App/Navbar/Navbar")
+local Navbar = require("@Src/Screens/Connected/Navbar/Navbar")
 
 local useStudioTheme = require("@Contexts/StudioTheme").useStudioTheme
 
 local e = React.createElement
 
-local function MainView(): React.Node
+local function ConnectedScreen()
 	local theme = useStudioTheme()
 
 	return e("Frame", {
@@ -18,4 +18,4 @@ local function MainView(): React.Node
 	})
 end
 
-return MainView
+return ConnectedScreen

@@ -2,6 +2,14 @@ Key,Source
 General.Houdini,Houdini
 General.HoudiniEngine,Houdini Engine
 General.ToolbarButtonTooltip,Open the Houdini Engine UI
-Offline.Title,Daemon is offline
-Offline.Message,The Houdini Engine daemon is not running. Please start the daemon to use Houdini Engine.
-Offline.Countdown,(Automatically retrying in {1:int}...)
+
+Misc.Okay,Okay
+Misc.Cancel,Cancel
+
+Screen.Connect.Subheading,Connect to the Houdini Bridge
+Screen.Connect.Address,Address
+Screen.Connect.Port,Port
+Screen.Connect.Btn_Connect,Connect
+Screen.Connect.Btn_Settings,Settings
+
+Screen.Error.BridgeNotRunning,Couldn't connect to the Houdini Bridge. Make sure the bridge is running.

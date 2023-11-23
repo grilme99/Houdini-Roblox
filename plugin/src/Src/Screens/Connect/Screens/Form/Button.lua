@@ -12,6 +12,7 @@ export type Props = {
 	primaryButton: boolean,
 	disabled: boolean,
 	loading: boolean,
+	layoutOrder: number?,
 	onClick: () -> (),
 }
 
@@ -20,6 +21,7 @@ local function Button(props: Props)
 	local primaryButton = props.primaryButton
 	local disabled = props.disabled
 	local loading = props.loading
+	local layoutOrder = props.layoutOrder
 	local onClick = props.onClick
 
     local displayDisabled = disabled or loading
@@ -40,6 +42,7 @@ local function Button(props: Props)
 		BackgroundColor3 = primaryButton and theme:GetColor(Enum.StudioStyleGuideColor.DialogMainButton)
 			or theme:GetColor(Enum.StudioStyleGuideColor.DialogButton),
 		BorderSizePixel = 0,
+		LayoutOrder = layoutOrder,
         [React.Event.Activated] = onClick,
 	}, {
 		Padding = e("UIPadding", {
