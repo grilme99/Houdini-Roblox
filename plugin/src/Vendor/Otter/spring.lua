@@ -7,7 +7,7 @@
 ]]
 
 local Packages = script:FindFirstAncestor("HoudiniEngineForRoblox").Packages
-local assign = require(Packages.Polyfill).Object.assign
+local assign = require(Packages.LuauPolyfill).Object.assign
 
 local types = require(script.Parent.types)
 type State = types.State

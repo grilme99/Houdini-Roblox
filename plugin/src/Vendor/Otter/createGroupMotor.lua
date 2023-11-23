@@ -3,7 +3,7 @@
 local Packages = script:FindFirstAncestor("HoudiniEngineForRoblox").Packages
 local Vendor = script.Parent.Parent
 
-local Object = require(Packages.Polyfill).Object
+local Object = require(Packages.LuauPolyfill).Object
 local Signal = require(Vendor.Signal)
 local createSignal = Signal.createSignal
 

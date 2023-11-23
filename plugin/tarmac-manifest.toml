@@ -3,38 +3,62 @@ hash = "5c492f5e0ea700493e597eeb4e4271e032e1b9839e1f422a274486562906e9f8"
 id = 15429695742
 packable = false
 
+[inputs."assets/pack/ConnectScreen/HapiLogo_Dark.png"]
+hash = "329e5b5ed0f25785c65e437b8c0ebf0c72877d2e620574919a2b772d899c6809"
+id = 15432631756
+slice = [[0, 28], [155, 54]]
+packable = true
+
+[inputs."assets/pack/ConnectScreen/HapiLogo_Dark@2x.png"]
+hash = "351bd26e8269b678c5182c8d5b23854ef14ba65ca454684b7e38bf2bfa1d1515"
+id = 15432631930
+slice = [[0, 54], [310, 106]]
+packable = true
+
+[inputs."assets/pack/ConnectScreen/HapiLogo_Light.png"]
+hash = "83ee2c88fe0929ce549aa93df8922894157ef29671ba3ace9e6bc16ec427f13f"
+id = 15432631756
+slice = [[0, 0], [155, 27]]
+packable = true
+
+[inputs."assets/pack/ConnectScreen/HapiLogo_Light@2x.png"]
+hash = "63855e26df5a25f8760479706ac528c85a4873644059a8d277d4743dbbb29533"
+id = 15432631930
+slice = [[0, 0], [310, 53]]
+packable = true
+
 [inputs."assets/pack/Navbar/Assets.png"]
 hash = "b6994b9b925215456456a1638c397225ec536b92db6f740763e1d7b32fa720c3"
-id = 15431563463
-slice = [[0, 0], [18, 15]]
+id = 15432631756
+slice = [[156, 0], [174, 15]]
 packable = true
 
 [inputs."assets/pack/Navbar/Assets@2x.png"]
 hash = "5e30e54aaf98d4abf3422848ba3d761e2c9e714c5290aa4a3f4a45e8d1d0d666"
-id = 15431563615
-slice = [[0, 0], [36, 30]]
+id = 15432631930
+slice = [[311, 0], [347, 30]]
 packable = true
 
 [inputs."assets/pack/Navbar/Properties.png"]
 hash = "ee0073828c36740b28055f31b23e67b6dd313e3e8030de7408374245784f2aed"
-id = 15431563463
-slice = [[19, 0], [35, 16]]
+id = 15432631756
+slice = [[156, 28], [172, 44]]
 packable = true
 
 [inputs."assets/pack/Navbar/Properties@2x.png"]
 hash = "dc746562e34b818342ea57c9198f8af48ea9673f59d3add6a3c0911cd28bda83"
-id = 15431563615
-slice = [[37, 0], [69, 32]]
+id = 15432631930
+slice = [[311, 54], [343, 86]]
 packable = true
 
 [inputs."assets/pack/Navbar/Settings.png"]
 hash = "87afeead4fc654d9850bbfbe6a2fa58b40a91849366fdeb6828726d6058c82ff"
-id = 15431563463
-slice = [[0, 16], [16, 32]]
+id = 15432631756
+slice = [[0, 55], [16, 71]]
 packable = true
 
 [inputs."assets/pack/Navbar/Settings@2x.png"]
 hash = "1fc4036fc7ccd782af46ee41f786a4fddb693434b113e3b284738ef2aa802631"
-id = 15431563615
-slice = [[0, 31], [31, 63]]
+id = 15432631930
+slice = [[0, 107], [31, 139]]
 packable = true

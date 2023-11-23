@@ -7,4 +7,14 @@ PluginConstants.Font = table.freeze({
 	Bold = Font.fromEnum(Enum.Font.SourceSansBold),
 })
 
+PluginConstants.RootScreen = table.freeze({
+	Connect = "Connect",
+	Connected = "Connected",
+})
+
+PluginConstants.ConnectScreens = table.freeze({
+	Form = "Connect/Form",
+	Error = "Connect/Error",
+})
+
 return PluginConstants

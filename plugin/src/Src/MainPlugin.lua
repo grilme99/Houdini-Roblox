@@ -1,14 +1,11 @@
 local React = require("@Packages/React")
 local ReactRoblox = require("@Packages/ReactRoblox")
 
-local ReactNavigation = require("@Vendor/ReactNavigation")
-
 local Toolbar = require("@Components/Plugin/Toolbar")
 local ToolbarButton = require("@Components/Plugin/ToolbarButton")
 local DockWidget = require("@Components/Plugin/DockWidget")
 
-local MainView = require("@Components/App/MainView")
-
+local AppContainer = require("@Src/AppContainer")
 local ContextProvider = require("@Src/ContextProvider")
 local TarmacAssets = require("@Src/TarmacAssets")
 local TarmacAssetUtils = require("@Src/TarmacAssetUtils")
@@ -77,7 +74,7 @@ local function MainPlugin(props: Props)
 				setEnabled(rbx.Enabled)
 			end,
 		}, {
-			MainView = e(MainView, {}),
+			AppContainer = e(AppContainer, {}),
 		}),
 	})
 end
