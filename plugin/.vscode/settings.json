@@ -12,6 +12,7 @@
     "@Contexts": "src/Src/Contexts",
     "@Systems": "src/Src/Systems",
     "@Components": "src/Src/Components",
-    "@Utils": "src/Src/Utils"
+    "@Utils": "src/Src/Utils",
+    "@Types": "src/Src/Types"
   }
 }

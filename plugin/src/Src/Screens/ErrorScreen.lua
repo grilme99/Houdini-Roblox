@@ -6,10 +6,11 @@ local useNavigation = ReactNavigation.useNavigation
 local PluginConstants = require("@Src/PluginConstants")
 local Font = PluginConstants.Font
 
-local Button = require("@Src/Screens/Connect/Screens/Form/Button")
+local Button = require("@Components/Studio/Button")
 
 local useStudioTheme = require("@Contexts/StudioTheme").useStudioTheme
 local useWidgetDimensions = require("@Contexts/WidgetDimensions").useWidgetDimensions
+local useI18n = require("@Hooks/useI18n")
 
 local e = React.createElement
 
@@ -19,6 +20,8 @@ local function ErrorScreen()
 	local widgetDimensions = useWidgetDimensions()
 
 	local errorMessage = navigation.getParam("errorMessage", "An unknown error occurred")
+
+	local okayText = useI18n("Misc.Okay")
 
 	return e("Frame", {
 		Size = UDim2.fromScale(1, 1),
@@ -76,14 +79,14 @@ local function ErrorScreen()
 			}),
 
 			BackButton = e(Button, {
-				text = "Okay",
-                primaryButton = false,
-                disabled = false,
-                loading = false,
-                layoutOrder = 2,
-                onClick = function()
-                    navigation.goBack()
-                end
+				text = okayText,
+				primaryButton = false,
+				disabled = false,
+				loading = false,
+				layoutOrder = 2,
+				onClick = function()
+					navigation.goBack()
+				end,
 			}, {}),
 		}),
 	})

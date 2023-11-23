@@ -6,70 +6,73 @@ local HttpService = game:GetService("HttpService")
 local Signal = require("@Packages/Signal")
 type Signal<T...> = Signal.Signal<T...>
 
-export type Connection = {
-    sessionId: string,
-}
+local DaemonConnection = require("@Systems/DaemonConnection")
+type DaemonConnection = DaemonConnection.DaemonConnection
 
 local DaemonBridge = {}
 
 DaemonBridge.IsConnectionOpen = false
-DaemonBridge.Connection = nil :: Connection?
-DaemonBridge.OnConnectionChanged = Signal.new() :: Signal<boolean>
+DaemonBridge.Connection = nil :: DaemonConnection?
+DaemonBridge.OnConnectionChanged = Signal.new() :: Signal<DaemonConnection?>
 
 export type OpenConnectionResult = {
-    success: boolean,
-    error: string?,
+	success: boolean,
+	error: string?,
 }
 
 function DaemonBridge.OpenConnection(address: string, port: number): OpenConnectionResult
-    if DaemonBridge.IsConnectionOpen then
-        return {
-            success = false,
-            error = "Connection already open",
-        }
-    end
+	if DaemonBridge.IsConnectionOpen then
+		return {
+			success = false,
+			error = "Connection already open",
+		}
+	end
 
-    local baseUrl = string.format("http://%s:%d", address, port)
-    local url = string.format("%s/connect", baseUrl)
+	local baseUrl = string.format("http://%s:%d", address, port)
 
-    local requestSuccess, result = pcall(function()
-        return HttpService:RequestAsync({
-            Url = url,
-            Method = "POST",
-        })
-    end)
+	local requestSuccess, result = pcall(function()
+		return HttpService:RequestAsync({
+			Url = baseUrl .. "/connect",
+			Method = "POST",
+		})
+	end)
 
-    if not requestSuccess then
-        return {
-            success = false,
-            error = result,
-        }
-    end
+	if not requestSuccess then
+		return {
+			success = false,
+			error = result,
+		}
+	end
 
-    local decodeSuccess, decodedResult = pcall(function()
-        return HttpService:JSONDecode(result.Body)
-    end)
+	local decodeSuccess, decodedResult = pcall(function()
+		return HttpService:JSONDecode(result.Body)
+	end)
 
-    if not decodeSuccess then
-        return {
-            success = false,
-            error = decodedResult,
-        }
-    end
+	if not decodeSuccess then
+		return {
+			success = false,
+			error = decodedResult,
+		}
+	end
 
-    local sessionId = decodedResult.id
-    DaemonBridge.Connection = {
-        sessionId = sessionId,
-    }
+	DaemonBridge.Connection = DaemonConnection.new(baseUrl, decodedResult)
+	DaemonBridge.IsConnectionOpen = true
+	DaemonBridge.OnConnectionChanged:Fire(DaemonBridge.Connection)
 
-    DaemonBridge.IsConnectionOpen = true
-    DaemonBridge.OnConnectionChanged:Fire(true)
-
-    return {
-        success = true,
-    }
+	return {
+		success = true,
+	}
 end
 
-function DaemonBridge.CloseConnection() end
+function DaemonBridge.CloseConnection()
+	if DaemonBridge.Connection then
+		DaemonBridge.Connection:close()
+
+		-- TODO: Check if closing was successful before doing this
+		DaemonBridge.IsConnectionOpen = false
+		DaemonBridge.Connection = nil
+		DaemonBridge.OnConnectionChanged:Fire(nil)
+	end
+end
 
 return DaemonBridge

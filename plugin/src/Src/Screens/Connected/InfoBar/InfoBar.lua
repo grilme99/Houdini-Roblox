@@ -1,16 +1,25 @@
 local React = require("@Packages/React")
 local ReactSpring = require("@Packages/ReactSpring")
 
+local ReactNavigation = require("@Vendor/ReactNavigation/init")
+local useNavigation = ReactNavigation.useNavigation
+
 local PluginConstants = require("@Src/PluginConstants")
 local Font = PluginConstants.Font
 
+local DaemonBridge = require("@Systems/DaemonBridge")
+
+local Button = require("@Components/Studio/Button")
+
 local useStudioTheme = require("@Contexts/StudioTheme").useStudioTheme
+local useI18n = require("@Hooks/useI18n")
 
 local e = React.createElement
 local useSpring = ReactSpring.useSpring
 
 local function InfoBar()
 	local theme = useStudioTheme()
+	local navigation = useNavigation()
 
 	local styles = useSpring({
 		from = {
@@ -24,6 +33,9 @@ local function InfoBar()
 		config = { duration = 0.6, easing = ReactSpring.easings.easeOutQuad },
 		loop = { delay = 3, reset = true } :: any,
 	})
+
+    local connectedText = useI18n("Screen.Connected.InfoBar.Connected")
+	local disconnectText = useI18n("Screen.Connected.InfoBar.Disconnect")
 
 	return e("Frame", {
 		AnchorPoint = Vector2.new(0, 1),
@@ -78,10 +90,25 @@ local function InfoBar()
 			Size = UDim2.new(1, -32, 1, 0),
 			BackgroundTransparency = 1,
 			FontFace = Font.SemiBold,
-			Text = "Connected to bridge",
+			Text = connectedText,
 			TextColor3 = theme:GetColor(Enum.StudioStyleGuideColor.MainText),
 			TextSize = 14,
 			TextXAlignment = Enum.TextXAlignment.Left,
+		}),
+
+		DisconnectButton = e(Button, {
+			anchorPoint = Vector2.new(1, 0.5),
+			position = UDim2.new(1, -12, 0.5, 0),
+			size = UDim2.fromOffset(0, 18),
+			internalPadding = Vector2.new(12, 8),
+			automaticSize = Enum.AutomaticSize.X,
+			textSize = 14,
+			text = disconnectText,
+			primaryButton = false,
+			onClick = function()
+				DaemonBridge.CloseConnection()
+				navigation.navigate(PluginConstants.RootScreen.Connect)
+			end,
 		}),
 	})
 end

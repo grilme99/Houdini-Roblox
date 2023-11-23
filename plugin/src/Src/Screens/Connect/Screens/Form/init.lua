@@ -17,7 +17,7 @@ local PluginConstants = require("@Src/PluginConstants")
 local Font = PluginConstants.Font
 
 local FormGroup = require("@Src/Screens/Connect/Screens/Form/FormGroup")
-local Button = require("@Src/Screens/Connect/Screens/Form/Button")
+local Button = require("@Components/Studio/Button")
 
 local useStudioTheme = require("@Contexts/StudioTheme").useStudioTheme
 local useTextBounds = require("@Hooks/useTextBounds")
