@@ -5,7 +5,12 @@ registry = "test"
 [[package]]
 name = "brooke/plugin"
 version = "0.1.0"
-dependencies = [["LuauPolyfill", "jsdotlua/luau-polyfill@1.2.3"], ["React", "jsdotlua/react@17.0.2"], ["ReactRoblox", "jsdotlua/react-roblox@17.0.2"], ["RegExp", "jsdotlua/regex@1.0.2"], ["Signal", "sleitnick/signal@2.0.1"]]
+dependencies = [["LuauPolyfill", "jsdotlua/luau-polyfill@1.2.3"], ["React", "jsdotlua/react@17.0.2"], ["ReactRoblox", "jsdotlua/react-roblox@17.0.2"], ["ReactSpring", "chriscerie/react-spring@2.0.0"], ["RegExp", "jsdotlua/regex@1.0.2"], ["Signal", "sleitnick/signal@2.0.1"]]
+
+[[package]]
+name = "chriscerie/react-spring"
+version = "2.0.0"
+dependencies = [["Promise", "evaera/promise@4.0.0"], ["React", "jsdotlua/react@17.0.2"], ["ReactRoblox", "jsdotlua/react-roblox@17.0.2"], ["TestEZ", "roblox/testez@0.4.1"]]
 
 [[package]]
 name = "evaera/promise"
@@ -96,6 +101,11 @@ dependencies = []
 name = "jsdotlua/timers"
 version = "1.2.3"
 dependencies = [["Collections", "jsdotlua/collections@1.2.3"]]
+
+[[package]]
+name = "roblox/testez"
+version = "0.4.1"
+dependencies = []
 
 [[package]]
 name = "sleitnick/signal"

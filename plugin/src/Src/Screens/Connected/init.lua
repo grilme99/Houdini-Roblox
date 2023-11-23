@@ -1,6 +1,7 @@
 local React = require("@Packages/React")
 
 local Navbar = require("@Src/Screens/Connected/Navbar/Navbar")
+local InfoBar = require("@Src/Screens/Connected/InfoBar/InfoBar")
 
 local useStudioTheme = require("@Contexts/StudioTheme").useStudioTheme
 
@@ -15,6 +16,7 @@ local function ConnectedScreen()
 		BorderSizePixel = 0,
 	}, {
 		Navbar = e(Navbar, {}),
+		InfoBar = e(InfoBar, {}),
 	})
 end
 
