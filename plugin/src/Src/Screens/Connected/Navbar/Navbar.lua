@@ -43,11 +43,8 @@ local function Navbar()
 			iconSize = button.iconSize,
 			text = button.text,
 			displayText = displayText,
-			selected = index == 2,
 			buttonWidth = buttonWidth,
-			onClick = function()
-				print("Clicked button")
-			end,
+			routeName = button.routeName,
 		})
 	end
 

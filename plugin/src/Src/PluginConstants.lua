@@ -19,4 +19,10 @@ PluginConstants.ConnectScreens = table.freeze({
 	Error = "Connect/Error",
 })
 
+PluginConstants.ConnectedScreens = table.freeze({
+	Assets = "Connected/Assets",
+	Properties = "Connected/Properties",
+	Settings = "Connected/Settings",
+})
+
 return PluginConstants

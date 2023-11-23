@@ -8,14 +8,17 @@ local useStudioTheme = require("@Contexts/StudioTheme").useStudioTheme
 local e = React.createElement
 
 export type Props = {
-    anchorPoint: Vector2?,
-    position: UDim2?,
-    size: UDim2?,
-    automaticSize: Enum.AutomaticSize?,
+	anchorPoint: Vector2?,
+	position: UDim2?,
+	size: UDim2?,
+	automaticSize: Enum.AutomaticSize?,
 	internalPadding: Vector2?,
 
+	backgroundColor3: Color3?,
+	borderColor3: Color3?,
+
 	text: string,
-    textSize: number?,
+	textSize: number?,
 	primaryButton: boolean?,
 	disabled: boolean?,
 	loading: boolean?,
@@ -24,14 +27,17 @@ export type Props = {
 }
 
 local function Button(props: Props)
-    local anchorPoint = props.anchorPoint
-    local position = props.position
-    local size = props.size
-    local automaticSize = props.automaticSize
+	local anchorPoint = props.anchorPoint
+	local position = props.position
+	local size = props.size
+	local automaticSize = props.automaticSize
 	local internalPadding = props.internalPadding
 
+	local backgroundColor3 = props.backgroundColor3
+	local borderColor3 = props.borderColor3
+
 	local text = props.text
-    local textSize = props.textSize
+	local textSize = props.textSize
 	local primaryButton = props.primaryButton
 	local disabled = props.disabled
 	local loading = props.loading
@@ -46,9 +52,9 @@ local function Button(props: Props)
 	local theme = useStudioTheme()
 
 	return e("TextButton", {
-        AnchorPoint = anchorPoint,
-        Position = position,
-        Size = size,
+		AnchorPoint = anchorPoint,
+		Position = position,
+		Size = size,
 		AutomaticSize = automaticSize or Enum.AutomaticSize.XY,
 		Active = not displayDisabled,
 		AutoButtonColor = not displayDisabled,
@@ -59,8 +65,11 @@ local function Button(props: Props)
 		TextTransparency = displayDisabled and 0.2 or 0,
 		TextColor3 = primaryButton and theme:GetColor(Enum.StudioStyleGuideColor.DialogMainButtonText)
 			or theme:GetColor(Enum.StudioStyleGuideColor.DialogButtonText),
-		BackgroundColor3 = primaryButton and theme:GetColor(Enum.StudioStyleGuideColor.DialogMainButton)
-			or theme:GetColor(Enum.StudioStyleGuideColor.DialogButton),
+		BackgroundColor3 = if backgroundColor3
+			then backgroundColor3
+			else primaryButton and theme:GetColor(Enum.StudioStyleGuideColor.DialogMainButton) or theme:GetColor(
+				Enum.StudioStyleGuideColor.DialogButton
+			),
 		BorderSizePixel = 0,
 		LayoutOrder = layoutOrder,
 		[React.Event.Activated] = onClick,
@@ -77,7 +86,9 @@ local function Button(props: Props)
 		}),
 
 		Stroke = not displayDisabled and e("UIStroke", {
-			Color = theme:GetColor(Enum.StudioStyleGuideColor.DialogButtonBorder),
+			Color = if borderColor3
+				then borderColor3
+				else theme:GetColor(Enum.StudioStyleGuideColor.DialogButtonBorder),
 			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 			Thickness = 1,
 		}),

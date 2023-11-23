@@ -4,13 +4,13 @@ return {
 		HapiLogo_Dark = function(dpiScale)
 			if dpiScale >= 2 then
 				return {
-					Image = "rbxassetid://15432631930",
+					Image = "rbxassetid://15439199312",
 					ImageRectOffset = Vector2.new(0, 54),
 					ImageRectSize = Vector2.new(310, 52),
 				}
 			else
 				return {
-					Image = "rbxassetid://15432631756",
+					Image = "rbxassetid://15439199176",
 					ImageRectOffset = Vector2.new(0, 28),
 					ImageRectSize = Vector2.new(155, 26),
 				}
@@ -19,13 +19,13 @@ return {
 		HapiLogo_Light = function(dpiScale)
 			if dpiScale >= 2 then
 				return {
-					Image = "rbxassetid://15432631930",
+					Image = "rbxassetid://15439199312",
 					ImageRectOffset = Vector2.new(0, 0),
 					ImageRectSize = Vector2.new(310, 53),
 				}
 			else
 				return {
-					Image = "rbxassetid://15432631756",
+					Image = "rbxassetid://15439199176",
 					ImageRectOffset = Vector2.new(0, 0),
 					ImageRectSize = Vector2.new(155, 27),
 				}
@@ -33,17 +33,34 @@ return {
 		end,
 	},
 	HoudiniEngineBadge = "rbxassetid://15429695742",
+	Misc = {
+		SearchIcon = function(dpiScale)
+			if dpiScale >= 2 then
+				return {
+					Image = "rbxassetid://15439199312",
+					ImageRectOffset = Vector2.new(348, 0),
+					ImageRectSize = Vector2.new(24, 24),
+				}
+			else
+				return {
+					Image = "rbxassetid://15439199176",
+					ImageRectOffset = Vector2.new(175, 0),
+					ImageRectSize = Vector2.new(12, 12),
+				}
+			end
+		end,
+	},
 	Navbar = {
 		Assets = function(dpiScale)
 			if dpiScale >= 2 then
 				return {
-					Image = "rbxassetid://15432631930",
+					Image = "rbxassetid://15439199312",
 					ImageRectOffset = Vector2.new(311, 0),
 					ImageRectSize = Vector2.new(36, 30),
 				}
 			else
 				return {
-					Image = "rbxassetid://15432631756",
+					Image = "rbxassetid://15439199176",
 					ImageRectOffset = Vector2.new(156, 0),
 					ImageRectSize = Vector2.new(18, 15),
 				}
@@ -52,13 +69,13 @@ return {
 		Properties = function(dpiScale)
 			if dpiScale >= 2 then
 				return {
-					Image = "rbxassetid://15432631930",
+					Image = "rbxassetid://15439199312",
 					ImageRectOffset = Vector2.new(311, 54),
 					ImageRectSize = Vector2.new(32, 32),
 				}
 			else
 				return {
-					Image = "rbxassetid://15432631756",
+					Image = "rbxassetid://15439199176",
 					ImageRectOffset = Vector2.new(156, 28),
 					ImageRectSize = Vector2.new(16, 16),
 				}
@@ -67,13 +84,13 @@ return {
 		Settings = function(dpiScale)
 			if dpiScale >= 2 then
 				return {
-					Image = "rbxassetid://15432631930",
+					Image = "rbxassetid://15439199312",
 					ImageRectOffset = Vector2.new(0, 107),
 					ImageRectSize = Vector2.new(31, 32),
 				}
 			else
 				return {
-					Image = "rbxassetid://15432631756",
+					Image = "rbxassetid://15439199176",
 					ImageRectOffset = Vector2.new(0, 55),
 					ImageRectSize = Vector2.new(16, 16),
 				}

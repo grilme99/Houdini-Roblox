@@ -82,11 +82,14 @@ function DaemonConnection._makeRequest(self: DaemonConnection, path: string, bod
 	end
 end
 
+function DaemonConnection.openAssetPrompt(self: DaemonConnection)
+	local response = self:_makeRequest("/open-asset", {})
+	print(response)
+end
+
 --- Close the connection to the daemon, ending this session.
 function DaemonConnection.close(self: DaemonConnection)
-    return self:_makeRequest("/close", {
-        sessionId = self.sessionId,
-    })
+    return self:_makeRequest("/close", {})
 end
 
 return DaemonConnection

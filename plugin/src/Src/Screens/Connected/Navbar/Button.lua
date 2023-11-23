@@ -1,5 +1,8 @@
 local React = require("@Packages/React")
 
+local ReactNavigation = require("@Vendor/ReactNavigation/init")
+local useNavigation = ReactNavigation.useNavigation
+
 local PluginConstants = require("@Src/PluginConstants")
 local Font = PluginConstants.Font
 
@@ -17,20 +20,22 @@ export type Props = {
 	iconSize: Vector2,
 	text: string,
 	displayText: boolean,
-	selected: boolean,
 	buttonWidth: number,
-	onClick: () -> (),
+	routeName: string,
 }
 
 local function NavbarButton(props: Props)
+	local navigation = useNavigation()
+
 	local index = props.index
 	local icon = props.icon
 	local iconSize = props.iconSize
 	local text = props.text
 	local displayText = props.displayText
-	local selected = props.selected
 	local buttonWidth = props.buttonWidth
-	local onClick = props.onClick
+	local routeName = props.routeName
+
+	local selected = navigation.state.index == index
 
 	local theme = useStudioTheme()
 	local isDark = ThemeUtils.IsDarkerTheme(theme)
@@ -55,7 +60,10 @@ local function NavbarButton(props: Props)
 		BackgroundColor3 = theme:GetColor(Enum.StudioStyleGuideColor.Titlebar),
 		AutoButtonColor = false,
 		BorderSizePixel = 0,
-		[React.Event.Activated] = onClick,
+		ZIndex = if selected then 2 else 1,
+		[React.Event.Activated] = function()
+			navigation.navigate(routeName)
+		end,
 		[React.Event.MouseEnter] = function()
 			setHovering(true)
 		end,
