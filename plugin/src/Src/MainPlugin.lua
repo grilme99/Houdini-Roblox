@@ -5,6 +5,11 @@ local Toolbar = require("@Components/Plugin/Toolbar")
 local ToolbarButton = require("@Components/Plugin/ToolbarButton")
 local DockWidget = require("@Components/Plugin/DockWidget")
 
+local StudioTheme = require("@Contexts/StudioTheme")
+local useStudioTheme = StudioTheme.useStudioTheme
+
+local ThemeUtils = require("@Utils/ThemeUtils")
+
 local AppContainer = require("@Src/AppContainer")
 local ContextProvider = require("@Src/ContextProvider")
 local TarmacAssets = require("@Src/TarmacAssets")
@@ -14,6 +19,47 @@ local useI18n = require("@Hooks/useI18n")
 
 local e = React.createElement
 local useState = React.useState
+
+type HoudiniToolbarProps = {
+	plugin: Plugin,
+	enabled: boolean,
+	toggleEnabled: () -> (),
+}
+
+local function HoudiniToolbar(props: HoudiniToolbarProps)
+	local plugin = props.plugin
+	local enabled = props.enabled
+	local toggleEnabled = props.toggleEnabled
+
+	local pluginName = useI18n("General.HoudiniEngine")
+	local tooltip = useI18n("General.ToolbarButtonTooltip")
+
+	local theme = useStudioTheme()
+	local isDark = ThemeUtils.IsDarkerTheme(theme)
+
+	local icon = if isDark
+		then TarmacAssetUtils.ResolveTarmacAsset(TarmacAssets.EngineBadge_DarkTheme).Image
+		else TarmacAssetUtils.ResolveTarmacAsset(TarmacAssets.EngineBadge_LightTheme).Image
+
+	return e(Toolbar, {
+		plugin = plugin,
+		title = pluginName,
+		renderButtons = function(toolbar)
+			return {
+				Toggle = e(ToolbarButton, {
+					plugin = plugin,
+					toolbar = toolbar,
+					active = enabled,
+					title = pluginName,
+					tooltip = tooltip,
+					clickableWhenViewportHidden = true,
+					icon = icon,
+					onClick = toggleEnabled,
+				}),
+			}
+		end,
+	})
+end
 
 export type Props = {
 	plugin: Plugin,
@@ -30,29 +76,15 @@ local function MainPlugin(props: Props)
 	end
 
 	local pluginName = useI18n("General.HoudiniEngine")
-	local tooltip = useI18n("General.ToolbarButtonTooltip")
 
 	return e(ContextProvider, {
 		plugin = plugin,
 	}, {
-		HoudiniToolbar = e(Toolbar, {
+		HoudiniToolbar = e(HoudiniToolbar, {
 			plugin = plugin,
-			title = pluginName,
-			renderButtons = function(toolbar)
-				return {
-					Toggle = e(ToolbarButton, {
-						plugin = plugin,
-						toolbar = toolbar,
-						active = enabled,
-						title = pluginName,
-						tooltip = tooltip,
-						clickableWhenViewportHidden = true,
-						icon = TarmacAssetUtils.ResolveTarmacAsset(TarmacAssets.HoudiniEngineBadge).Image,
-						onClick = toggleEnabled,
-					}),
-				}
-			end,
-		}, {}),
+			enabled = enabled,
+			toggleEnabled = toggleEnabled,
+		}),
 
 		HoudiniWidget = e(DockWidget, {
 			plugin = plugin,

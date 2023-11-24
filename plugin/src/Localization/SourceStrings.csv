@@ -14,5 +14,5 @@ Screen.Connect.Btn_Settings,Settings
 
 Screen.Error.BridgeNotRunning,Couldn't connect to the Houdini Bridge. Make sure the bridge is running.
 
-Screen.Connected.InfoBar.Connected,Connected to Bridge
+Screen.Connected.InfoBar.Connected,Connected to Houdini
 Screen.Connected.InfoBar.Disconnect,Disconnect

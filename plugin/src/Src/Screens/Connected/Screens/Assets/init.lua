@@ -1,87 +1,141 @@
 local React = require("@Packages/React")
-local VirtualizedList = require("@Packages/VirtualizedList")
+local Sift = require("@Packages/Sift")
 
 local Topbar = require("@Src/Screens/Connected/Screens/Assets/Topbar")
-local SectionHeader = require("@Src/Screens/Connected/Screens/Assets/SectionHeader")
-local ListItem = require("@Src/Screens/Connected/Screens/Assets/ListItem")
+local FileList = require("@Src/Screens/Connected/Screens/Assets/FileList")
+local TableHeader = require("@Src/Screens/Connected/Screens/Assets/TableHeader")
+local TableTabs = require("@Src/Screens/Connected/Screens/Assets/TableTabs")
+
+local FileSystemContext = require("@Contexts/FileSystem")
+local FileUtils = require("@Utils/FileUtils")
+
+local HttpTypes = require("@Types/HttpTypes")
+type FileSystem = HttpTypes.FileSystem
 
 local e = React.createElement
+local useState = React.useState
 
-local ITEMS = {}
-for i = 1, 10000 do
-	table.insert(ITEMS, {
-		name = "Test " .. i,
-	})
-end
+local FS: FileSystem = {
+	{
+		type = "Folder" :: "Folder",
+		id = "Folder1",
+		displayName = "Folder 1",
+		children = {
+			{
+				type = "Asset" :: "Asset",
+				id = "Asset1",
+				displayName = "Asset 1",
+				assetType = "HDA",
+			},
+			{
+				type = "Asset" :: "Asset",
+				id = "Asset2",
+				displayName = "Asset 2",
+				assetType = "HDA",
+			},
+			{
+				type = "Asset" :: "Asset",
+				id = "Asset3",
+				displayName = "Asset 3",
+				assetType = "HDA",
+			},
+		},
+	},
+	{
+		type = "Folder" :: "Folder",
+		id = "Folder2",
+		displayName = "Folder 2",
+		children = {
+			{
+				type = "Asset" :: "Asset",
+				id = "Asset4",
+				displayName = "Asset 4",
+				assetType = "HDA",
+			},
+			{
+				type = "Asset" :: "Asset",
+				id = "Asset5",
+				displayName = "Asset 5",
+				assetType = "HDA",
+			},
+			{
+				type = "Asset" :: "Asset",
+				id = "Asset6",
+				displayName = "Asset 6",
+				assetType = "HDA",
+			},
+		},
+	},
+	{
+		type = "Folder" :: "Folder",
+		id = "Folder3",
+		displayName = "Folder 3",
+		children = {
+			{
+				type = "Asset" :: "Asset",
+				id = "Asset7",
+				displayName = "Asset 7",
+				assetType = "HDA",
+			},
+		},
+	},
+	{
+		type = "Folder" :: "Folder",
+		id = "Folder4",
+		displayName = "Folder 4",
+	},
+}
 
 local function AssetsScreen()
-	local sections = {
-		{
-			title = "Today",
-			data = {
-				{ name = "Test" },
-				{ name = "Test" },
-				{ name = "Test" },
-			},
-		},
-		{
-			title = "1 Day Ago",
-			data = {
-				{ name = "Test" },
-				{ name = "Test" },
-				{ name = "Test" },
-				{ name = "Test" },
-				{ name = "Test" },
-			},
-		},
-		{
-			title = "2 Days Ago",
-			data = {
-				{ name = "Test" },
-				{ name = "Test" },
-				{ name = "Test" },
-			},
-		},
-		{
-			title = "1 Week Ago",
-			data = ITEMS,
-		},
-	}
+	local rootDir, setRootDir = useState(FS)
+	local currentDirId, setCurrentDirId = useState("{ROOT}")
+	local selectedFileId: string?, setSelectedFileId = useState(nil :: string?)
 
-	return e(React.Fragment, {}, {
+	return e(FileSystemContext.Provider, {
+		value = {
+			currentDirId = currentDirId,
+			selectedFileId = selectedFileId,
+			rootDir = rootDir,
+			selectFile = setSelectedFileId,
+			renameFile = function(fileId: string, newName: string)
+				setRootDir(function(rootDir_)
+					local rootDir = Sift.Dictionary.copyDeep(rootDir_)
+
+					local file: any = FileUtils.IdToFileRecursive(rootDir, fileId)
+					if file then
+						file.displayName = newName
+					else
+						warn("Tried to rename, but could not find file with id", fileId)
+					end
+
+					return rootDir
+				end)
+			end,
+			setCurrentDir = function(dirId: string)
+				setCurrentDirId(dirId)
+			end,
+		},
+	}, {
 		Topbar = e(Topbar, {}),
 
-		ListContainer = e("Frame", {
-			Position = UDim2.fromOffset(0, 52),
-			Size = UDim2.new(1, 0, 1, -52),
-			BackgroundTransparency = 1,
+		TableTabs = e(TableTabs.Provider, {
+			value = {
+				tabs = {
+					name = 0.5,
+					dateModified = 0.3,
+					kind = 0.2,
+				},
+				resizeTab = function() end,
+			},
 		}, {
-			List = e(VirtualizedList.SectionList, {
-				sections = sections,
-				style = {
-					BackgroundTransparency = 1,
-				},
-				contentContainerStyle = {
-					BackgroundTransparency = 1,
-				},
-				renderSectionHeader = function(data)
-					return e(SectionHeader, {
-						sectionName = data.section.title,
-					})
-				end,
-				renderItem = function(data)
-					return e(ListItem, {
-						index = data.index,
-						itemName = data.item.name,
-					})
-				end,
-				getItemLayout = function(_data, index: number)
-					return {
-						length = 32,
-						offset = 32 * (index - 1),
-						index = index,
-					}
-				end,
+			TableHeader = e(TableHeader, {}),
+
+			ListContainer = e("Frame", {
+				Position = UDim2.fromOffset(0, 52 + 24 + 6),
+				Size = UDim2.new(1, 0, 1, -(52 + 24 + 6)),
+				BackgroundTransparency = 1,
+			}, {
+				List = e(FileList, {}),
 			}),
 		}),
 	})
