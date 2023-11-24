@@ -32,6 +32,7 @@ local function Topbar()
 		Size = UDim2.new(1, 0, 0, 48),
 		BackgroundColor3 = theme:GetColor(Enum.StudioStyleGuideColor.Titlebar),
 		BorderSizePixel = 0,
+        ZIndex = 2,
 	}, {
 		SearchBar = e("Frame", {
 			AnchorPoint = Vector2.new(0, 0.5),
