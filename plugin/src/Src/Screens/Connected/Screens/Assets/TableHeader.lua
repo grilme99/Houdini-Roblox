@@ -23,7 +23,8 @@ type TabProps = {
 	size: number,
 	innerPadding: number?,
 	includeDivider: boolean,
-    sort: "asc" | "desc" | nil,
+	sort: string | nil,
+    onClick: () -> (),
 }
 
 local function Tab(props: TabProps)
@@ -33,13 +34,14 @@ local function Tab(props: TabProps)
 	local innerPadding = props.innerPadding
 	local includeDivider = props.includeDivider
 	local sort = props.sort
+    local onClick = props.onClick
 
-    local selected = sort ~= nil
+	local selected = sort ~= nil
 
-    local icon
-    if selected then
-        icon = if sort == "asc" then SortAsc else SortDesc
-    end
+	local icon
+	if selected then
+		icon = if sort == "asc" then SortAsc else SortDesc
+	end
 
 	local theme = useStudioTheme()
 
@@ -54,21 +56,22 @@ local function Tab(props: TabProps)
 			else theme:GetColor(Enum.StudioStyleGuideColor.SubText),
 		TextXAlignment = Enum.TextXAlignment.Left,
 		LayoutOrder = index,
+        [React.Event.Activated] = onClick,
 	}, {
 		Padding = innerPadding and e("UIPadding", {
 			PaddingLeft = UDim.new(0, innerPadding),
 		}),
 
-        Icon = icon and e("ImageLabel", {
-            AnchorPoint = Vector2.new(1, 0.5),
-            Position = UDim2.new(1, -16, 0.5, -1),
-            Size = UDim2.fromOffset(10, 6),
-            BackgroundTransparency = 1,
-            Image = icon.Image,
-            ImageRectOffset = icon.ImageRectOffset,
-            ImageRectSize = icon.ImageRectSize,
-            ImageColor3 = theme:GetColor(Enum.StudioStyleGuideColor.SubText),
-        }),
+		Icon = icon and e("ImageLabel", {
+			AnchorPoint = Vector2.new(1, 0.5),
+			Position = UDim2.new(1, -16, 0.5, -1),
+			Size = UDim2.fromOffset(10, 6),
+			BackgroundTransparency = 1,
+			Image = icon.Image,
+			ImageRectOffset = icon.ImageRectOffset,
+			ImageRectSize = icon.ImageRectSize,
+			ImageColor3 = theme:GetColor(Enum.StudioStyleGuideColor.SubText),
+		}),
 
 		Divider = includeDivider and e("Frame", {
 			AnchorPoint = Vector2.new(1, 0.5),
@@ -80,9 +83,34 @@ local function Tab(props: TabProps)
 	})
 end
 
-local function TableHeader()
+export type Props = {
+	sortMode: string,
+	setSortMode: (string) -> (),
+	sortTarget: string,
+	setSortTarget: (string) -> (),
+}
+
+local function TableHeader(props: Props)
+	local sortMode = props.sortMode
+	local setSortMode = props.setSortMode
+	local sortTarget = props.sortTarget
+	local setSortTarget = props.setSortTarget
+
 	local tableTabs = useTableTabs()
 	local theme = useStudioTheme()
+
+    local function handleClick(tabName: string)
+        if sortTarget == tabName then
+            if sortMode == "asc" then
+                setSortMode("desc")
+            else
+                setSortMode("asc")
+            end
+        else
+            setSortTarget(tabName)
+            setSortMode("asc")
+        end
+    end
 
 	return e("Frame", {
 		Position = UDim2.fromOffset(0, 52),
@@ -116,7 +144,10 @@ local function TableHeader()
 				size = tableTabs.tabs.name,
 				innerPadding = 4,
 				includeDivider = true,
-                sort = "asc",
+				sort = if sortTarget == "displayName" then sortMode else nil,
+				onClick = function()
+					handleClick("displayName")
+				end,
 			}),
 
 			DateModified = e(Tab, {
@@ -124,7 +155,10 @@ local function TableHeader()
 				name = "Date Modified",
 				size = tableTabs.tabs.dateModified,
 				includeDivider = true,
-                sort = nil,
+				sort = if sortTarget == "dateModified" then sortMode else nil,
+				onClick = function()
+					handleClick("dateModified")
+				end,
 			}),
 
 			Kind = e(Tab, {
@@ -132,7 +166,10 @@ local function TableHeader()
 				name = "Kind",
 				size = tableTabs.tabs.kind,
 				includeDivider = false,
-                sort = nil,
+				sort = if sortTarget == "type" then sortMode else nil,
+				onClick = function()
+					handleClick("type")
+				end,
 			}),
 		}),
 	})

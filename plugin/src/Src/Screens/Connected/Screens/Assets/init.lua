@@ -98,7 +98,7 @@ local function AssetsScreen()
 	local selectedFileId: string?, setSelectedFileId = useState(nil :: string?)
 
 	local sortMode, setSortMode = useState("asc")
-	local sortTarget, setSortTarget = useState("name")
+	local sortTarget, setSortTarget = useState("displayName")
 
 	return e(FileSystemContext.Provider, {
 		value = {
@@ -137,7 +137,12 @@ local function AssetsScreen()
 				resizeTab = function() end,
 			},
 		}, {
-			TableHeader = e(TableHeader, {}),
+			TableHeader = e(TableHeader, {
+				sortMode = sortMode,
+				setSortMode = setSortMode,
+				sortTarget = sortTarget,
+				setSortTarget = setSortTarget,
+			}),
 
 			ListContainer = e("Frame", {
 				Position = UDim2.fromOffset(0, 52 + 24 + 6),
