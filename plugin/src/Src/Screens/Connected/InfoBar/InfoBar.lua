@@ -45,7 +45,6 @@ local function InfoBar()
 		BorderSizePixel = 0,
 	}, {
 		Border = e("Frame", {
-			AnchorPoint = Vector2.new(0, 1),
 			Size = UDim2.new(1, 0, 0, 1),
 			BackgroundColor3 = theme:GetColor(Enum.StudioStyleGuideColor.Border),
 			BorderSizePixel = 0,

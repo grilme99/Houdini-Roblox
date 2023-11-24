@@ -5,6 +5,7 @@ local Topbar = require("@Src/Screens/Connected/Screens/Assets/Topbar")
 local FileList = require("@Src/Screens/Connected/Screens/Assets/FileList")
 local TableHeader = require("@Src/Screens/Connected/Screens/Assets/TableHeader")
 local TableTabs = require("@Src/Screens/Connected/Screens/Assets/TableTabs")
+local Breadcrumbs = require("@Src/Screens/Connected/Screens/Assets/Breadcrumbs")
 
 local FileSystemContext = require("@Contexts/FileSystem")
 local FileUtils = require("@Utils/FileUtils")
@@ -39,6 +40,11 @@ local FS: FileSystem = {
 				displayName = "Asset 3",
 				assetType = "HDA",
 			},
+			{
+				type = "Folder" :: "Folder",
+				id = "Folder5",
+				displayName = "Folder 5",
+			} :: any,
 		},
 	},
 	{
@@ -91,6 +97,9 @@ local function AssetsScreen()
 	local currentDirId, setCurrentDirId = useState("{ROOT}")
 	local selectedFileId: string?, setSelectedFileId = useState(nil :: string?)
 
+	local sortMode, setSortMode = useState("asc")
+	local sortTarget, setSortTarget = useState("name")
+
 	return e(FileSystemContext.Provider, {
 		value = {
 			currentDirId = currentDirId,
@@ -132,11 +141,16 @@ local function AssetsScreen()
 
 			ListContainer = e("Frame", {
 				Position = UDim2.fromOffset(0, 52 + 24 + 6),
-				Size = UDim2.new(1, 0, 1, -(52 + 24 + 6)),
+				Size = UDim2.new(1, 0, 1, -(52 + 24 + 24 + 6)),
 				BackgroundTransparency = 1,
 			}, {
-				List = e(FileList, {}),
+				List = e(FileList, {
+					sortMode = sortMode,
+					sortTarget = sortTarget,
+				}),
 			}),
+
+			Breadcrumbs = e(Breadcrumbs, {}),
 		}),
 	})
 end

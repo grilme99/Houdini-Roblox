@@ -17,20 +17,38 @@ local e = React.createElement
 
 type Array<T> = { T }
 
-local function FileList()
+export type Props = {
+	sortMode: string,
+	sortTarget: string,
+}
+
+local function FileList(props: Props)
+	local sortMode = props.sortMode
+	local sortTarget = props.sortTarget
+
 	local fileSystem = useFileSystem()
 
 	local directoryChildren: Array<File>
 	if fileSystem.currentDirId == "{ROOT}" then
 		directoryChildren = fileSystem.rootDir
 	else
-		local currentDir_ = assert(FileUtils.IdToFileRecursive(fileSystem.rootDir, fileSystem.currentDirId))
+		local currentDir_ = FileUtils.IdToFileRecursive(fileSystem.rootDir, fileSystem.currentDirId)
 		local currentDir = currentDir_ :: FolderFile
 		directoryChildren = currentDir.children or {}
 	end
 
+	-- Sort the directory children based on the sort mode and target
+	local sortedChildren = table.clone(directoryChildren)
+	table.sort(sortedChildren, function(a: any, b: any)
+		if sortMode == "asc" then
+			return a[sortTarget] < b[sortTarget]
+		else
+			return a[sortTarget] > b[sortTarget]
+		end
+	end)
+
 	return e(VirtualizedList.FlatList, {
-		data = directoryChildren,
+		data = sortedChildren,
 		extraData = fileSystem.selectedFileId,
 		style = {
 			BackgroundTransparency = 1,
