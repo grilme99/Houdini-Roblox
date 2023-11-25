@@ -1,141 +1,139 @@
+[inputs."assets/no-pack/DragIcons/AssetIcon.png"]
+hash = "0a597d5ad81d430b95378b636098d0d0d2361f957c9495eaa53426e840da7bea"
+id = 15459142177
+packable = false
+
+[inputs."assets/no-pack/DragIcons/AssetIcon@2x.png"]
+hash = "630139d7380f45931625b264a983d022761315a34c5a017fb1af010bba7a0510"
+id = 15459142332
+packable = false
+
 [inputs."assets/no-pack/EngineBadge_DarkTheme.png"]
 hash = "5c492f5e0ea700493e597eeb4e4271e032e1b9839e1f422a274486562906e9f8"
-id = 15450131327
+id = 15458992104
 packable = false
 
 [inputs."assets/no-pack/EngineBadge_LightTheme.png"]
 hash = "e6bde6f9b4a1696fb6f5cfd14e05cc306c4616d4ec1f629c768b0a88fd71f4a2"
-id = 15450139652
+id = 15458992211
 packable = false
 
 [inputs."assets/pack/AssetsScreen/AssetIcon.png"]
 hash = "0a597d5ad81d430b95378b636098d0d0d2361f957c9495eaa53426e840da7bea"
-id = 15451013005
-slice = [[173, 28], [187, 42]]
+id = 15459142502
+slice = [[175, 0], [189, 14]]
 packable = true
 
 [inputs."assets/pack/AssetsScreen/AssetIcon@2x.png"]
 hash = "630139d7380f45931625b264a983d022761315a34c5a017fb1af010bba7a0510"
-id = 15451013147
-slice = [[344, 54], [372, 82]]
+id = 15459142701
+slice = [[348, 0], [376, 28]]
 packable = true
 
 [inputs."assets/pack/AssetsScreen/Breadcrumbs/CaretRight.png"]
 hash = "3f4e254dbfb200481e166c3441f17fe1521ebb19791ef952073fbf191c1df977"
-id = 15451013005
-slice = [[0, 72], [4, 80]]
+id = 15459142502
+slice = [[17, 55], [21, 63]]
 packable = true
 
 [inputs."assets/pack/AssetsScreen/Breadcrumbs/CaretRight@2x.png"]
 hash = "c2cee36ac60c071f5e8c6aa31ac6cd46f70b3c5c1c403c28a7d683ab02f006b6"
-id = 15451013147
-slice = [[0, 140], [8, 156]]
-packable = true
-
-[inputs."assets/pack/AssetsScreen/FolderIcon.png"]
-hash = "70de7ca9b90efc9d4f87773e58e64627d385c111120104a8191aa39f9dd42e80"
-id = 15451013005
-slice = [[175, 0], [191, 14]]
-packable = true
-
-[inputs."assets/pack/AssetsScreen/FolderIcon@2x.png"]
-hash = "58e2aab65d2af71a681700c1a2b65481afcc05837281509c8dfd332ab107cf6c"
-id = 15451013147
-slice = [[348, 0], [380, 28]]
+id = 15459142701
+slice = [[32, 107], [40, 123]]
 packable = true
 
 [inputs."assets/pack/AssetsScreen/SortAsc.png"]
 hash = "7285f08df074f565c7b9c81bf132f1e50cadcb4e333ae2f100d98f23f180fa13"
-id = 15451013005
+id = 15459142502
 slice = [[156, 16], [167, 23]]
 packable = true
 
 [inputs."assets/pack/AssetsScreen/SortAsc@2x.png"]
 hash = "c2026639fd7ffd5c63773a91f956de80b5a2fddc79e12710063f5aebbe8895f2"
-id = 15451013147
+id = 15459142701
 slice = [[311, 31], [332, 44]]
 packable = true
 
 [inputs."assets/pack/AssetsScreen/SortDesc.png"]
 hash = "8c86555a218ccc68575019676fe38067b58f0fe4bd05be72c0381b02b2015fd9"
-id = 15451013005
-slice = [[17, 55], [28, 62]]
+id = 15459142502
+slice = [[156, 45], [167, 52]]
 packable = true
 
 [inputs."assets/pack/AssetsScreen/SortDesc@2x.png"]
 hash = "3b66ab38f38d0ac3000ba1306c06c09dfbcbda7cfa7595a1669542f90ae01697"
-id = 15451013147
-slice = [[32, 107], [53, 120]]
+id = 15459142701
+slice = [[311, 87], [332, 100]]
 packable = true
 
 [inputs."assets/pack/ConnectScreen/HapiLogo_Dark.png"]
 hash = "329e5b5ed0f25785c65e437b8c0ebf0c72877d2e620574919a2b772d899c6809"
-id = 15451013005
+id = 15459142502
 slice = [[0, 28], [155, 54]]
 packable = true
 
 [inputs."assets/pack/ConnectScreen/HapiLogo_Dark@2x.png"]
 hash = "351bd26e8269b678c5182c8d5b23854ef14ba65ca454684b7e38bf2bfa1d1515"
-id = 15451013147
+id = 15459142701
 slice = [[0, 54], [310, 106]]
 packable = true
 
 [inputs."assets/pack/ConnectScreen/HapiLogo_Light.png"]
 hash = "83ee2c88fe0929ce549aa93df8922894157ef29671ba3ace9e6bc16ec427f13f"
-id = 15451013005
+id = 15459142502
 slice = [[0, 0], [155, 27]]
 packable = true
 
 [inputs."assets/pack/ConnectScreen/HapiLogo_Light@2x.png"]
 hash = "63855e26df5a25f8760479706ac528c85a4873644059a8d277d4743dbbb29533"
-id = 15451013147
+id = 15459142701
 slice = [[0, 0], [310, 53]]
 packable = true
 
 [inputs."assets/pack/Misc/SearchIcon.png"]
 hash = "46893d3d97cc1f1a790756cac060eccf6a1993ea85e94c60b5c3d62acc58afcd"
-id = 15451013005
-slice = [[156, 45], [168, 57]]
+id = 15459142502
+slice = [[173, 28], [185, 40]]
 packable = true
 
 [inputs."assets/pack/Misc/SearchIcon@2x.png"]
 hash = "05160b9ef61776360f8da44dcb102d47bee2bac4b1909959e0ac2d49b4b22078"
-id = 15451013147
-slice = [[311, 87], [335, 111]]
+id = 15459142701
+slice = [[344, 54], [368, 78]]
 packable = true
 
 [inputs."assets/pack/Navbar/Assets.png"]
 hash = "b6994b9b925215456456a1638c397225ec536b92db6f740763e1d7b32fa720c3"
-id = 15451013005
+id = 15459142502
 slice = [[156, 0], [174, 15]]
 packable = true
 
 [inputs."assets/pack/Navbar/Assets@2x.png"]
 hash = "5e30e54aaf98d4abf3422848ba3d761e2c9e714c5290aa4a3f4a45e8d1d0d666"
-id = 15451013147
+id = 15459142701
 slice = [[311, 0], [347, 30]]
 packable = true
 
 [inputs."assets/pack/Navbar/Properties.png"]
 hash = "ee0073828c36740b28055f31b23e67b6dd313e3e8030de7408374245784f2aed"
-id = 15451013005
+id = 15459142502
 slice = [[156, 28], [172, 44]]
 packable = true
 
 [inputs."assets/pack/Navbar/Properties@2x.png"]
 hash = "dc746562e34b818342ea57c9198f8af48ea9673f59d3add6a3c0911cd28bda83"
-id = 15451013147
+id = 15459142701
 slice = [[311, 54], [343, 86]]
 packable = true
 
 [inputs."assets/pack/Navbar/Settings.png"]
 hash = "87afeead4fc654d9850bbfbe6a2fa58b40a91849366fdeb6828726d6058c82ff"
-id = 15451013005
+id = 15459142502
 slice = [[0, 55], [16, 71]]
 packable = true
 
 [inputs."assets/pack/Navbar/Settings@2x.png"]
 hash = "1fc4036fc7ccd782af46ee41f786a4fddb693434b113e3b284738ef2aa802631"
-id = 15451013147
+id = 15459142701
 slice = [[0, 107], [31, 139]]
 packable = true

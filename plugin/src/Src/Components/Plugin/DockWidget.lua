@@ -1,6 +1,7 @@
 local React = require("@Packages/React")
 local ReactRoblox = require("@Packages/ReactRoblox")
 
+local DockWidgetContext = require("@Contexts/DockWidget")
 local WidgetDimensions = require("@Contexts/WidgetDimensions")
 
 local e = React.createElement
@@ -157,9 +158,13 @@ function DockWidget:render()
 	end
 
 	return ReactRoblox.createPortal(
-		e(WidgetDimensions.Provider, {
-			value = self.state.widgetSize,
-		}, self.props.children),
+		e(DockWidgetContext.Provider, {
+			value = self.widget,
+		}, {
+			WidgetDimensions = e(WidgetDimensions.Provider, {
+				value = self.state.widgetSize,
+			}, self.props.children),
+		}),
 		self.widget
 	)
 end

@@ -10,7 +10,7 @@ export type TarmacAsset = string | ResolvedImage | (dpi: number) -> string | Res
 
 local TarmacAssetUtils = {}
 
-function TarmacAssetUtils.ResolveTarmacAsset(asset: TarmacAsset): ResolvedImage
+function TarmacAssetUtils.ResolveTarmacAsset(asset: TarmacAsset, dpiOverride: number?): ResolvedImage
 	if type(asset) == "string" then
 		return {
 			Image = asset,
@@ -18,7 +18,8 @@ function TarmacAssetUtils.ResolveTarmacAsset(asset: TarmacAsset): ResolvedImage
 	elseif type(asset) == "table" then
 		return asset
 	else
-		return TarmacAssetUtils.ResolveTarmacAsset(asset(DpiProvider.GetDpiScale()))
+		local dpi = dpiOverride or DpiProvider.GetDpiScale()
+		return TarmacAssetUtils.ResolveTarmacAsset(asset(dpi))
 	end
 end
 
