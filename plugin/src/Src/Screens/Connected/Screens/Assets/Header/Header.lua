@@ -166,8 +166,11 @@ local function Header()
 				iconSize = Vector2.new(14, 16),
                 dimmedIcon = true,
 				layoutOrder = 1,
+				disabled = fileSystem.selectedFileId == nil,
 				onClick = function()
-					print("Delete")
+					if fileSystem.selectedFileId then
+						fileSystem.deleteFile(fileSystem.selectedFileId)
+					end
 				end,
 			}),
 		}),

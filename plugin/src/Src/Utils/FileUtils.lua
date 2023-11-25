@@ -30,7 +30,7 @@ function FileUtils.IdToFileRecursive(fs: FileSystem, id: string, parents_: Array
 	return nil, parents_ or {}
 end
 
-function FileUtils.BuildDirectoryPath(fs: FileSystem, id: string): string
+function FileUtils.BuildFilePath(fs: FileSystem, id: string): string
 	local file, parents = FileUtils.IdToFileRecursive(fs, id)
 	if file then
 		local path = file.id

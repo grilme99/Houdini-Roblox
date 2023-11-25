@@ -123,6 +123,12 @@ function DaemonConnection.listFiles(self: DaemonConnection): HttpTypes.FileSyste
 	end
 end
 
+function DaemonConnection.deleteFile(self: DaemonConnection, filePath: string)
+	self:_makeRequest("/delete-file", {
+		path = filePath,
+	})
+end
+
 --- Close the connection to the daemon, ending this session.
 function DaemonConnection.close(self: DaemonConnection)
 	return self:_makeRequest("/close", {})

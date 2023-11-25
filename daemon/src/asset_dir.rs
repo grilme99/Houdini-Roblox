@@ -13,11 +13,13 @@ use crate::state::get_config_dir;
 #[serde(rename_all = "snake_case")]
 pub enum AssetDirError {
     #[error("An unknown file system error occurred")]
-    FsError,
+    FsError(String),
     #[error("A config file could not be serialized or deserialized")]
     SerdeError(String),
     #[error("The parent directory {0} does not exist")]
     BadParent(String),
+    #[error("The file {0} does not exist")]
+    FileDoesNotExist(String),
 }
 
 type Result<T> = std::result::Result<T, AssetDirError>;
@@ -104,11 +106,11 @@ pub struct FileConfig {
 }
 
 fn get_root_dir() -> Result<PathBuf> {
-    let config_dir = get_config_dir().map_err(|_| AssetDirError::FsError)?;
+    let config_dir = get_config_dir().map_err(|err| AssetDirError::FsError(err.to_string()))?;
     let root_dir = config_dir.join("Assets");
 
     if !root_dir.exists() {
-        fs::create_dir_all(&root_dir).map_err(|_| AssetDirError::FsError)?;
+        fs::create_dir_all(&root_dir).map_err(|err| AssetDirError::FsError(err.to_string()))?;
     }
 
     Ok(root_dir)
@@ -135,12 +137,12 @@ pub fn create_folder(directory: &Path, display_name: &str) -> Result<String> {
         meta: FileType::Folder(FolderConfig { children: None }),
     };
 
-    fs::create_dir_all(&folder_path).map_err(|_| AssetDirError::FsError)?;
+    fs::create_dir_all(&folder_path).map_err(|err| AssetDirError::FsError(err.to_string()))?;
     fs::write(
         &config_path,
         serde_json::to_string_pretty(&folder_config).unwrap(),
     )
-    .map_err(|_| AssetDirError::FsError)?;
+    .map_err(|err| AssetDirError::FsError(err.to_string()))?;
 
     log::debug!("Created folder {folder_path:?}");
 
@@ -175,7 +177,7 @@ pub fn save_asset(directory: &Path, asset_path: &Path, display_name: &str) -> Re
         &asset_config_path,
         serde_json::to_string_pretty(&asset_config).unwrap(),
     )
-    .map_err(|_| AssetDirError::FsError)?;
+    .map_err(|err| AssetDirError::FsError(err.to_string()))?;
 
     log::debug!("Saved asset {asset_path:?}");
 
@@ -186,16 +188,17 @@ fn list_files_recursive(current_dir: &Path) -> Result<Vec<FileConfig>> {
     let mut files = Vec::new();
 
     // Iterate over the entries in the current directory.
-    for entry in fs::read_dir(current_dir).map_err(|_| AssetDirError::FsError)? {
-        let entry = entry.map_err(|_| AssetDirError::FsError)?;
+    for entry in fs::read_dir(current_dir).map_err(|err| AssetDirError::FsError(err.to_string()))? {
+        let entry = entry.map_err(|err| AssetDirError::FsError(err.to_string()))?;
         let path = entry.path();
 
         // Skip the entry if it's not a file or if it doesn't have a .json extension.
         if path.is_file() && path.extension().and_then(|s| s.to_str()) == Some("json") {
             // Read and deserialize the .json file into a FileConfig.
-            let mut file_config: FileConfig =
-                serde_json::from_reader(fs::File::open(&path).map_err(|_| AssetDirError::FsError)?)
-                    .map_err(|err| AssetDirError::SerdeError(err.to_string()))?;
+            let mut file_config: FileConfig = serde_json::from_reader(
+                fs::File::open(&path).map_err(|err| AssetDirError::FsError(err.to_string()))?,
+            )
+            .map_err(|err| AssetDirError::SerdeError(err.to_string()))?;
 
             if let FileType::Folder(_) = file_config.meta {
                 // If it's a folder configuration, read its children.
@@ -217,6 +220,40 @@ fn list_files_recursive(current_dir: &Path) -> Result<Vec<FileConfig>> {
     }
 
     Ok(files)
+}
+
+pub fn delete_file(path: &Path) -> Result<()> {
+    let root_dir = get_root_dir()?;
+    let file_path = root_dir.join(path);
+
+    let mut deleted_something = false;
+    if file_path.exists() {
+        deleted_something = true;
+        if file_path.is_file() {
+            fs::remove_file(&file_path).map_err(|err| AssetDirError::FsError(err.to_string()))?;
+        } else if file_path.is_dir() {
+            fs::remove_dir_all(&file_path)
+                .map_err(|err| AssetDirError::FsError(err.to_string()))?;
+        } else {
+            log::warn!("Path {file_path:?} is neither a file nor a directory",)
+        }
+    }
+
+    // Delete the corresponding .json file.
+    let config_path = file_path.with_extension("json");
+    if config_path.exists() {
+        deleted_something = true;
+        fs::remove_file(&config_path).map_err(|err| AssetDirError::FsError(err.to_string()))?;
+    }
+
+    if !deleted_something {
+        return Err(AssetDirError::FileDoesNotExist(
+            path.to_string_lossy().to_string(),
+        ));
+    }
+
+    log::debug!("Deleted file {file_path:?}");
+    Ok(())
 }
 
 pub fn list_files() -> Result<Vec<FileConfig>> {

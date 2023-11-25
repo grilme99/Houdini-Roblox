@@ -20,6 +20,8 @@ type FileSystemContext = {
 	selectFile: (fileId: string) -> (),
 	setFileName: (fileId: string, newName: string) -> (),
 	setRenamingFileId: (fileId: string?) -> (),
+
+	deleteFile: (filePath: string) -> (),
 }
 
 local noop = function() end
@@ -38,6 +40,8 @@ local DEFAULT: FileSystemContext = {
 	selectFile = noop,
 	setFileName = noop,
 	setRenamingFileId = noop,
+
+	deleteFile = noop,
 }
 
 local FileSystem = {}

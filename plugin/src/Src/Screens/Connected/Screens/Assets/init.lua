@@ -52,7 +52,7 @@ local function AssetsScreen()
 				if daemonConnection then
 					task.spawn(function()
 						local dirId = if currentDirId == "{ROOT}" then "" else currentDirId
-						local path = FileUtils.BuildDirectoryPath(rootDir, dirId)
+						local path = FileUtils.BuildFilePath(rootDir, dirId)
 						daemonConnection:openAssetPrompt(path)
 						refresh()
 					end)
@@ -78,7 +78,7 @@ local function AssetsScreen()
 			createFolder = function(dirId: string, name: string)
 				if daemonConnection then
 					task.spawn(function()
-						local path = FileUtils.BuildDirectoryPath(rootDir, dirId)
+						local path = FileUtils.BuildFilePath(rootDir, dirId)
 						local newFolderId = daemonConnection:createFolder(path, name)
 
 						refresh()
@@ -95,8 +95,26 @@ local function AssetsScreen()
 			selectFile = setSelectedFileId,
 			setCurrentDir = function(dirId: string)
 				setCurrentDirId(dirId)
+				setSelectedFileId(nil)
 			end,
 			setRenamingFileId = setRenamingFileId,
+
+			deleteFile = function(fileId: string)
+				if daemonConnection then
+					task.spawn(function()
+						local filePath = FileUtils.BuildFilePath(rootDir, fileId)
+						if filePath == "{ROOT}" then
+							warn("Cannot delete root directory")
+							return
+						end
+
+						daemonConnection:deleteFile(filePath)
+						refresh()
+					end)
+				else
+					warn("Tried to delete file, but no daemon connection was available")
+				end
+			end,
 		},
 	}, {
 		Header = e("Frame", {
