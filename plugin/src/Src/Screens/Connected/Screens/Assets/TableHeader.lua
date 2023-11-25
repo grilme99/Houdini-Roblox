@@ -113,7 +113,7 @@ local function TableHeader(props: Props)
     end
 
 	return e("Frame", {
-		Position = UDim2.fromOffset(0, 52),
+		Position = UDim2.fromOffset(0, 50),
 		Size = UDim2.new(1, 0, 0, 24),
 		BackgroundTransparency = 1,
 	}, {

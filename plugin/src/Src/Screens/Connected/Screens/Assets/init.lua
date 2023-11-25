@@ -1,11 +1,11 @@
 local React = require("@Packages/React")
 local Sift = require("@Packages/Sift")
 
-local Topbar = require("@Src/Screens/Connected/Screens/Assets/Topbar")
 local FileList = require("@Src/Screens/Connected/Screens/Assets/FileList")
 local TableHeader = require("@Src/Screens/Connected/Screens/Assets/TableHeader")
 local TableTabs = require("@Src/Screens/Connected/Screens/Assets/TableTabs")
 local Breadcrumbs = require("@Src/Screens/Connected/Screens/Assets/Breadcrumbs")
+local Header = require("@Src/Screens/Connected/Screens/Assets/Header/Header")
 
 local useDaemonConnection = require("@Contexts/Daemon").useDaemonConnection
 
@@ -22,6 +22,7 @@ local function AssetsScreen()
 	local rootDir, setRootDir = useState({})
 	local currentDirId, setCurrentDirId = useState("{ROOT}")
 	local selectedFileId: string?, setSelectedFileId = useState(nil :: string?)
+	local renamingFileId: string?, setRenamingFileId = useState(nil :: string?)
 
 	local sortMode, setSortMode = useState("asc")
 	local sortTarget, setSortTarget = useState("displayName")
@@ -43,10 +44,23 @@ local function AssetsScreen()
 		value = {
 			currentDirId = currentDirId,
 			selectedFileId = selectedFileId,
+			renamingFileId = renamingFileId,
 			rootDir = rootDir,
+
 			refresh = refresh,
-			selectFile = setSelectedFileId,
-			renameFile = function(fileId: string, newName: string)
+			openAssetImport = function()
+				if daemonConnection then
+					task.spawn(function()
+						local dirId = if currentDirId == "{ROOT}" then "" else currentDirId
+						local path = FileUtils.BuildDirectoryPath(rootDir, dirId)
+						daemonConnection:openAssetPrompt(path)
+						refresh()
+					end)
+				else
+					warn("Tried to open asset import, but no daemon connection was available")
+				end
+			end,
+			setFileName = function(fileId: string, newName: string)
 				setRootDir(function(rootDir_)
 					local rootDir = Sift.Dictionary.copyDeep(rootDir_)
 
@@ -60,12 +74,38 @@ local function AssetsScreen()
 					return rootDir
 				end)
 			end,
+
+			createFolder = function(dirId: string, name: string)
+				if daemonConnection then
+					task.spawn(function()
+						local path = FileUtils.BuildDirectoryPath(rootDir, dirId)
+						local newFolderId = daemonConnection:createFolder(path, name)
+
+						refresh()
+						if newFolderId then
+							setSelectedFileId(newFolderId)
+							setRenamingFileId(newFolderId)
+						end
+					end)
+				else
+					warn("Tried to create folder, but no daemon connection was available")
+				end
+			end,
+
+			selectFile = setSelectedFileId,
 			setCurrentDir = function(dirId: string)
 				setCurrentDirId(dirId)
 			end,
+			setRenamingFileId = setRenamingFileId,
 		},
 	}, {
-		Topbar = e(Topbar, {}),
+		Header = e("Frame", {
+			Size = UDim2.new(1, 0, 0, 48),
+			BackgroundTransparency = 1,
+			ZIndex = 2,
+		}, {
+			Header = e(Header, {}),
+		}),
 
 		TableTabs = e(TableTabs.Provider, {
 			value = {
@@ -85,8 +125,8 @@ local function AssetsScreen()
 			}),
 
 			ListContainer = e("Frame", {
-				Position = UDim2.fromOffset(0, 52 + 24 + 6),
-				Size = UDim2.new(1, 0, 1, -(52 + 24 + 24 + 6)),
+				Position = UDim2.fromOffset(0, 50 + 24 + 6),
+				Size = UDim2.new(1, 0, 1, -(50 + 24 + 24 + 6)),
 				BackgroundTransparency = 1,
 			}, {
 				List = e(FileList, {

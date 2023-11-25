@@ -8,11 +8,7 @@ type Array<T> = { T }
 local FileUtils = {}
 
 -- Update this recursive function to populate the parents array once the file is found
-function FileUtils.IdToFileRecursive(
-	fs: FileSystem,
-	id: string,
-	parents_: Array<File>?
-): (File?, Array<File>)
+function FileUtils.IdToFileRecursive(fs: FileSystem, id: string, parents_: Array<File>?): (File?, Array<File>)
 	for _, file in fs do
 		if file.id == id then
 			return file, parents_ or {}
@@ -32,6 +28,21 @@ function FileUtils.IdToFileRecursive(
 	end
 
 	return nil, parents_ or {}
+end
+
+function FileUtils.BuildDirectoryPath(fs: FileSystem, id: string): string
+	local file, parents = FileUtils.IdToFileRecursive(fs, id)
+	if file then
+		local path = file.id
+
+		for _, parent in parents do
+			path = parent.id .. "/" .. path
+		end
+
+		return path
+	else
+		return "{ROOT}"
+	end
 end
 
 return FileUtils

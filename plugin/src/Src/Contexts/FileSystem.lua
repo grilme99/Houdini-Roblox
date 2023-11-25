@@ -8,22 +8,36 @@ local useContext = React.useContext
 type FileSystemContext = {
 	currentDirId: string,
 	selectedFileId: string | nil,
+	renamingFileId: string | nil,
 	rootDir: FileSystem,
+
 	refresh: () -> (),
-	selectFile: (fileId: string) -> (),
-	renameFile: (fileId: string, newName: string) -> (),
+	openAssetImport: () -> (),
 	setCurrentDir: (dirId: string) -> (),
+
+	createFolder: (dirId: string, name: string) -> (),
+
+	selectFile: (fileId: string) -> (),
+	setFileName: (fileId: string, newName: string) -> (),
+	setRenamingFileId: (fileId: string?) -> (),
 }
 
 local noop = function() end
 local DEFAULT: FileSystemContext = {
 	currentDirId = "{ROOT}",
 	selectedFileId = nil,
+	renamingFileId = nil,
 	rootDir = {},
+
 	refresh = noop,
-	selectFile = noop,
-	renameFile = noop,
+	openAssetImport = noop,
 	setCurrentDir = noop,
+
+	createFolder = noop,
+
+	selectFile = noop,
+	setFileName = noop,
+	setRenamingFileId = noop,
 }
 
 local FileSystem = {}

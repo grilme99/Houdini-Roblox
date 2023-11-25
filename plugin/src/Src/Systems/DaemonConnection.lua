@@ -96,6 +96,23 @@ function DaemonConnection.openAssetPrompt(self: DaemonConnection, directory: str
 	})
 end
 
+function DaemonConnection.createFolder(self: DaemonConnection, directory: string, displayName: string): string?
+	if directory == nil or directory == "{ROOT}" then
+		directory = ""
+	end
+
+	local response = self:_makeRequest("/create-folder", {
+		directory = directory,
+		displayName = displayName,
+	})
+
+	if response.success then
+		return response.result.body.id
+	else
+		return nil
+	end
+end
+
 function DaemonConnection.listFiles(self: DaemonConnection): HttpTypes.FileSystem
 	local result = self:_makeRequest("/list-files", {})
 

@@ -49,7 +49,8 @@ local function ListItem(props: Props)
 	local dragTriggered, setDragTriggered = useState(false)
 
 	local renameRef = useRef(nil :: TextBox?)
-	local renaming, setRenaming = useState(false)
+	local alreadyRenaming = useRef(false)
+	local renaming = fileSystem.renamingFileId == fileData.id
 
 	local folderIcon = StudioService:GetClassIcon("Folder")
 
@@ -92,6 +93,55 @@ local function ListItem(props: Props)
 
 	local isSelected = fileData.id == fileSystem.selectedFileId
 	local backgroundColor = if isSelected then Color3.fromHex("#0074bd") else defaultBackgroundColor
+
+	local function startRenaming()
+		renameCountdownThread.current = nil
+		fileSystem.setRenamingFileId(fileData.id)
+
+		alreadyRenaming.current = true
+
+		-- Note: Weird engine timing specifics means that
+		-- the shorted delay before `ref` is set is 0.
+		-- `task.defer` does not work.
+		task.delay(0, function()
+			local textbox = renameRef.current
+			if textbox then
+				textbox:CaptureFocus()
+
+				-- Select the name of the file, but leave out the file extension
+				local extension = string.match(fileData.displayName, "%.[^%.]+$")
+				textbox.SelectionStart = 1
+				if extension then
+					textbox.CursorPosition = #fileData.displayName - #extension + 1
+				else
+					textbox.CursorPosition = #fileData.displayName + 1
+				end
+
+				local connection
+				connection = textbox.FocusLost:Connect(function()
+					connection:Disconnect()
+					fileSystem.setRenamingFileId(nil)
+					alreadyRenaming.current = false
+
+					local newName = textbox.Text
+
+					-- The name can only contain alphanumeric characters, dashes, and underscores
+					-- It must be at least one character
+					if string.match(newName, "[a-zA-Z0-9-_]+") then
+						if newName ~= fileData.displayName then
+							fileSystem.setFileName(fileData.id, newName)
+						end
+					end
+				end)
+			end
+		end)
+	end
+
+	useEffect(function()
+		if renaming and not alreadyRenaming.current then
+			startRenaming()
+		end
+	end, { renaming })
 
 	local innerPadding = 8
 	return e("Frame", {
@@ -161,35 +211,7 @@ local function ListItem(props: Props)
 							fileSystem.setCurrentDir(fileData.id)
 						end
 					else
-						renameCountdownThread.current = task.delay(0.6, function()
-							renameCountdownThread.current = nil
-							setRenaming(true)
-
-							-- Note: Weird engine timing specifics means that
-							-- the shorted delay before `ref` is set is 0.
-							-- `task.defer` does not work.
-							task.delay(0, function()
-								if renameRef.current then
-									renameRef.current:CaptureFocus()
-
-									local connection
-									connection = renameRef.current.FocusLost:Connect(function()
-										connection:Disconnect()
-										setRenaming(false)
-
-										local newName = renameRef.current.Text
-
-										-- The name can only contain alphanumeric characters, dashes, and underscores
-										-- It must be at least one character
-										if string.match(newName, "[a-zA-Z0-9-_]+") then
-											if newName ~= fileData.displayName then
-												fileSystem.renameFile(fileData.id, newName)
-											end
-										end
-									end)
-								end
-							end)
-						end)
+						renameCountdownThread.current = task.delay(0.6, startRenaming)
 					end
 
 					setLastSelectTime(os.clock())
