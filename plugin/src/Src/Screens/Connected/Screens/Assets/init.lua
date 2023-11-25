@@ -44,6 +44,27 @@ local FS: FileSystem = {
 				type = "Folder" :: "Folder",
 				id = "Folder5",
 				displayName = "Folder 5",
+				children = {
+					{
+						type = "Folder" :: "Folder",
+						id = "Folder6",
+						displayName = "Folder 6",
+						children = {
+							{
+								type = "Folder" :: "Folder",
+								id = "Folder7",
+								displayName = "Folder 7",
+								children = {
+									{
+										type = "Folder" :: "Folder",
+										id = "Folder8",
+										displayName = "Folder 8",
+									},
+								},
+							},
+						},
+					},
+				},
 			} :: any,
 		},
 	},

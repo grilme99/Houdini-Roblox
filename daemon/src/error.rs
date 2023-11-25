@@ -4,8 +4,8 @@ use serde_json::json;
 use thiserror::Error;
 
 use crate::{
-    asset::AssetError, routes::OpenAssetError, session::SessionError, state::StateError,
-    utils::EnvironmentError,
+    asset::AssetError, asset_dir::AssetDirError, routes::OpenAssetError, session::SessionError,
+    state::StateError, utils::EnvironmentError,
 };
 
 #[derive(Debug, Error, Serialize)]
@@ -17,6 +17,7 @@ pub enum AppError {
     SessionError(SessionError),
     EnvironmentError(EnvironmentError),
     StateError(StateError),
+    AssetDirError(AssetDirError),
 }
 
 /// Macro to automate the implementation of the `From` trait for variants of the
@@ -44,7 +45,8 @@ from_variant!(
     OpenAssetError,
     SessionError,
     EnvironmentError,
-    StateError
+    StateError,
+    AssetDirError
 );
 
 impl IntoResponse for AppError {
@@ -56,6 +58,7 @@ impl IntoResponse for AppError {
             Self::SessionError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Self::EnvironmentError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Self::StateError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::AssetDirError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         };
 
         let body = Json(json!({

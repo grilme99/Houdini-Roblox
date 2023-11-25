@@ -16,7 +16,7 @@ pub enum StateError {
 
 type Result<T> = std::result::Result<T, StateError>;
 
-fn get_config_dir() -> Result<PathBuf> {
+pub fn get_config_dir() -> Result<PathBuf> {
     let config_dir = dirs::config_dir().ok_or(StateError::ConfigDirNotFound)?;
     Ok(config_dir.join("HoudiniEngineForRoblox"))
 }

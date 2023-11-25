@@ -2,6 +2,7 @@
 
 pub mod application;
 pub mod asset;
+pub mod asset_dir;
 pub mod error;
 pub mod message;
 pub mod routes;

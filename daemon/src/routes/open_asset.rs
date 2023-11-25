@@ -1,11 +1,11 @@
 use std::{path::PathBuf, str::FromStr};
 
 use axum::{http::StatusCode, Extension, Json};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 use crate::{
-    asset::SerializableParameter,
+    asset_dir::save_asset,
     error::AppError,
     message::{AppMsgReceiver, AppMsgTransmitter, ApplicationMessage, OpenFileSelectorOptions},
     session::AMSessionRegistry,
@@ -24,11 +24,16 @@ pub enum OpenAssetError {
     StateError(StateError),
 }
 
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct OpenAssetRequest {
+    pub directory: PathBuf,
+}
+
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct OpenAssetResponse {
-    pub parameters: Vec<SerializableParameter>,
-    // pub mesh_data: MeshData,
+    pub id: String,
 }
 
 #[axum::debug_handler]
@@ -37,6 +42,7 @@ pub async fn open_asset(
     Extension(rx_out): Extension<AppMsgReceiver>,
     Extension(registry): Extension<AMSessionRegistry>,
     ExtractSessionId(session_id): ExtractSessionId,
+    Json(body): Json<OpenAssetRequest>,
 ) -> Result<(StatusCode, Json<OpenAssetResponse>), AppError> {
     let mut registry = registry.lock().await;
     let mut rx_out = rx_out.lock().await;
@@ -52,7 +58,7 @@ pub async fn open_asset(
 
         let options = OpenFileSelectorOptions {
             name: "Open HDA",
-            filters: vec![("HDAs", &["otl", "hda", "otllc", "otlnc", "hdanc"])],
+            filters: vec![("HDAs", &["otl", "hda", "hdanc", "hdalc", "hdal", "hdat"])],
             directory: last_directory.to_owned(),
         };
 
@@ -69,13 +75,10 @@ pub async fn open_asset(
                     .map_err(OpenAssetError::StateError)?;
             }
 
-            let asset_id = session.load_asset_file(&file)?;
-            let asset = session.get_asset(asset_id).unwrap();
+            let display_name = file.file_name().unwrap().to_string_lossy().to_string();
+            let id = save_asset(&body.directory, &file, &display_name)?;
 
-            let parameters = asset.get_asset_parameters()?;
-            let _cook_result = asset.cook_asset()?;
-
-            Ok((StatusCode::OK, Json(OpenAssetResponse { parameters })))
+            Ok((StatusCode::OK, Json(OpenAssetResponse { id })))
         } else {
             Err(OpenAssetError::NoFileSelected.into())
         }

@@ -6,7 +6,7 @@ use tokio::sync::mpsc;
 
 use crate::{
     message::ApplicationMessage,
-    routes::{close, connect, open_asset},
+    routes::{close, connect, open_asset, list_files, create_folder},
     session::SessionRegistry,
 };
 
@@ -27,6 +27,8 @@ pub async fn start_application() -> anyhow::Result<()> {
         .route("/close", post(close))
         .route("/connect", post(connect))
         .route("/open-asset", post(open_asset))
+        .route("/list-files", post(list_files))
+        .route("/create-folder", post(create_folder))
         .layer(Extension(session_registry))
         .layer(Extension(tx_in))
         .layer(Extension(Arc::new(Mutex::new(rx_out))));
