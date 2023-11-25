@@ -32,9 +32,9 @@ local function FileList(props: Props)
 	if fileSystem.currentDirId == "{ROOT}" then
 		directoryChildren = fileSystem.rootDir
 	else
-		local currentDir_ = FileUtils.IdToFileRecursive(fileSystem.rootDir, fileSystem.currentDirId)
-		local currentDir = currentDir_ :: FolderFile
-		directoryChildren = currentDir.children or {}
+		local currentDir = assert(FileUtils.IdToFileRecursive(fileSystem.rootDir, fileSystem.currentDirId))
+		local meta = currentDir.meta :: FolderFile
+		directoryChildren = meta.children or {}
 	end
 
 	-- Sort the directory children based on the sort mode and target

@@ -54,7 +54,7 @@ local function ListItem(props: Props)
 	local folderIcon = StudioService:GetClassIcon("Folder")
 
 	local icon, iconSize
-	if fileData.type == "Folder" then
+	if fileData.meta.type == "Folder" then
 		icon = folderIcon
 		iconSize = Vector2.new(16, 16)
 	else
@@ -136,7 +136,7 @@ local function ListItem(props: Props)
 							MimeType = "text/plain",
 							Data = fileData.id,
 							MouseIcon = "",
-							DragIcon = if fileData.type == "Folder" then folderIcon.Image else AssetDragIcon.Image,
+							DragIcon = if fileData.meta.type == "Folder" then folderIcon.Image else AssetDragIcon.Image,
 							HotSpot = Vector2.new(20, 20),
 						})
 					end
@@ -157,7 +157,7 @@ local function ListItem(props: Props)
 					-- If the user double-clicks quickly, open the folder
 					-- If the user clicks after selecting, rename the file
 					if timeSinceLastSelect < 0.2 then
-						if fileData.type == "Folder" then
+						if fileData.meta.type == "Folder" then
 							fileSystem.setCurrentDir(fileData.id)
 						end
 					else
@@ -271,7 +271,7 @@ local function ListItem(props: Props)
 					Position = UDim2.fromScale(tableTabs.tabs.name + tableTabs.tabs.dateModified, 0.5),
 					Size = UDim2.fromScale(tableTabs.tabs.kind, 1),
 					BackgroundTransparency = 1,
-					Text = fileData.type,
+					Text = if fileData.meta.type == "Asset" then fileData.meta.assetType else fileData.meta.type,
 					FontFace = Font.Regular,
 					TextSize = 16,
 					TextColor3 = theme:GetColor(Enum.StudioStyleGuideColor.SubText),

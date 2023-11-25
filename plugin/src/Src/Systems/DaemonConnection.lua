@@ -37,7 +37,7 @@ function DaemonConnection._makeRequest(self: DaemonConnection, path: string, bod
 			Method = "POST",
 			Headers = {
 				["Content-Type"] = "application/json",
-                ["x-session-id"] = self.sessionId,
+				["x-session-id"] = self.sessionId,
 			},
 			Body = HttpService:JSONEncode(body),
 		})
@@ -55,6 +55,8 @@ function DaemonConnection._makeRequest(self: DaemonConnection, path: string, bod
 				},
 			}
 		else
+			warn("Failed to make request to " .. path .. ":", response.StatusMessage, "\n", response.Body)
+
 			return {
 				success = false,
 				result = {
@@ -70,6 +72,8 @@ function DaemonConnection._makeRequest(self: DaemonConnection, path: string, bod
 	if success then
 		return result
 	else
+		warn("Failed to make request to " .. path .. ":", result)
+
 		return {
 			success = false,
 			result = {
@@ -82,14 +86,29 @@ function DaemonConnection._makeRequest(self: DaemonConnection, path: string, bod
 	end
 end
 
-function DaemonConnection.openAssetPrompt(self: DaemonConnection)
-	local response = self:_makeRequest("/open-asset", {})
-	print(response)
+function DaemonConnection.openAssetPrompt(self: DaemonConnection, directory: string)
+	if directory == nil or directory == "{ROOT}" then
+		directory = ""
+	end
+
+	self:_makeRequest("/open-asset", {
+		directory = directory,
+	})
+end
+
+function DaemonConnection.listFiles(self: DaemonConnection): HttpTypes.FileSystem
+	local result = self:_makeRequest("/list-files", {})
+
+	if result.success then
+		return result.result.body.files
+	else
+		return {}
+	end
 end
 
 --- Close the connection to the daemon, ending this session.
 function DaemonConnection.close(self: DaemonConnection)
-    return self:_makeRequest("/close", {})
+	return self:_makeRequest("/close", {})
 end
 
 return DaemonConnection

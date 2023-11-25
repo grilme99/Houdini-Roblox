@@ -11,18 +11,18 @@ local FileUtils = {}
 function FileUtils.IdToFileRecursive(
 	fs: FileSystem,
 	id: string,
-	parents_: Array<FolderFile>?
-): (File?, Array<FolderFile>)
+	parents_: Array<File>?
+): (File?, Array<File>)
 	for _, file in fs do
 		if file.id == id then
 			return file, parents_ or {}
 		end
 
-		if file.type == "Folder" and file.children then
+		if file.meta.type == "Folder" and file.meta.children then
 			local parents = if parents_ then table.clone(parents_) else {}
 			table.insert(parents, file)
 
-			for _, child in file.children do
+			for _, child in file.meta.children do
 				local result, resultParents = FileUtils.IdToFileRecursive({ child }, id, parents)
 				if result then
 					return result, resultParents

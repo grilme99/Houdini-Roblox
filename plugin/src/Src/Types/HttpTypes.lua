@@ -13,22 +13,23 @@ export type SessionInfo = {
 	pipePath: string?,
 }
 
-export type BaseFile = {
-	id: string,
-	displayName: string,
-}
-
-export type AssetFile = BaseFile & {
+export type AssetFile = {
 	type: "Asset",
 	assetType: string,
+	assetExists: boolean,
+	assetPath: string,
 }
 
-export type FolderFile = BaseFile & {
+export type FolderFile = {
 	type: "Folder",
 	children: Array<File>?,
 }
 
-export type File = AssetFile | FolderFile
+export type File = {
+	id: string,
+	displayName: string,
+	meta: AssetFile | FolderFile,
+}
 
 export type FileSystem = Array<File>
 

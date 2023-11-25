@@ -12,6 +12,7 @@ local SearchIcon = TarmacAssetUtils.ResolveTarmacAsset(TarmacAssets.Misc.SearchI
 
 local useStudioTheme = require("@Contexts/StudioTheme").useStudioTheme
 local useDaemonConnection = require("@Contexts/Daemon").useDaemonConnection
+local useFileSystem = require("@Contexts/FileSystem").useFileSystem
 
 local e = React.createElement
 local useState = React.useState
@@ -19,9 +20,10 @@ local useState = React.useState
 local function Topbar()
 	local theme = useStudioTheme()
 	local daemonConnection = useDaemonConnection()
+	local fileSystem = useFileSystem()
 
 	local hovering, setHovering = useState(false)
-    local focused, setFocused = useState(false)
+	local focused, setFocused = useState(false)
 
 	local innerPadding = 10
 	local searchIconSize = 12
@@ -32,7 +34,7 @@ local function Topbar()
 		Size = UDim2.new(1, 0, 0, 48),
 		BackgroundColor3 = theme:GetColor(Enum.StudioStyleGuideColor.Titlebar),
 		BorderSizePixel = 0,
-        ZIndex = 2,
+		ZIndex = 2,
 	}, {
 		SearchBar = e("Frame", {
 			AnchorPoint = Vector2.new(0, 0.5),
@@ -83,12 +85,12 @@ local function Topbar()
 				[React.Event.MouseLeave] = function()
 					setHovering(false)
 				end,
-                [React.Event.Focused] = function()
-                    setFocused(true)
-                end,
-                [React.Event.FocusLost] = function()
-                    setFocused(false)
-                end,
+				[React.Event.Focused] = function()
+					setFocused(true)
+				end,
+				[React.Event.FocusLost] = function()
+					setFocused(false)
+				end,
 			}, {
 				Padding = e("UIPadding", {
 					PaddingLeft = UDim.new(0, 12 + searchIconSize + 8),
@@ -106,7 +108,8 @@ local function Topbar()
 			text = "Open Asset",
 			onClick = function()
 				if daemonConnection then
-					task.spawn(daemonConnection.openAssetPrompt, daemonConnection)
+					local dirId = if fileSystem.currentDirId == "{ROOT}" then "" else fileSystem.currentDirId
+					task.spawn(daemonConnection.openAssetPrompt, daemonConnection, dirId)
 				end
 			end,
 		}),

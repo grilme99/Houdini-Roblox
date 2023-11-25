@@ -7,125 +7,44 @@ local TableHeader = require("@Src/Screens/Connected/Screens/Assets/TableHeader")
 local TableTabs = require("@Src/Screens/Connected/Screens/Assets/TableTabs")
 local Breadcrumbs = require("@Src/Screens/Connected/Screens/Assets/Breadcrumbs")
 
+local useDaemonConnection = require("@Contexts/Daemon").useDaemonConnection
+
 local FileSystemContext = require("@Contexts/FileSystem")
 local FileUtils = require("@Utils/FileUtils")
 
-local HttpTypes = require("@Types/HttpTypes")
-type FileSystem = HttpTypes.FileSystem
-
 local e = React.createElement
 local useState = React.useState
-
-local FS: FileSystem = {
-	{
-		type = "Folder" :: "Folder",
-		id = "Folder1",
-		displayName = "Folder 1",
-		children = {
-			{
-				type = "Asset" :: "Asset",
-				id = "Asset1",
-				displayName = "Asset 1",
-				assetType = "HDA",
-			},
-			{
-				type = "Asset" :: "Asset",
-				id = "Asset2",
-				displayName = "Asset 2",
-				assetType = "HDA",
-			},
-			{
-				type = "Asset" :: "Asset",
-				id = "Asset3",
-				displayName = "Asset 3",
-				assetType = "HDA",
-			},
-			{
-				type = "Folder" :: "Folder",
-				id = "Folder5",
-				displayName = "Folder 5",
-				children = {
-					{
-						type = "Folder" :: "Folder",
-						id = "Folder6",
-						displayName = "Folder 6",
-						children = {
-							{
-								type = "Folder" :: "Folder",
-								id = "Folder7",
-								displayName = "Folder 7",
-								children = {
-									{
-										type = "Folder" :: "Folder",
-										id = "Folder8",
-										displayName = "Folder 8",
-									},
-								},
-							},
-						},
-					},
-				},
-			} :: any,
-		},
-	},
-	{
-		type = "Folder" :: "Folder",
-		id = "Folder2",
-		displayName = "Folder 2",
-		children = {
-			{
-				type = "Asset" :: "Asset",
-				id = "Asset4",
-				displayName = "Asset 4",
-				assetType = "HDA",
-			},
-			{
-				type = "Asset" :: "Asset",
-				id = "Asset5",
-				displayName = "Asset 5",
-				assetType = "HDA",
-			},
-			{
-				type = "Asset" :: "Asset",
-				id = "Asset6",
-				displayName = "Asset 6",
-				assetType = "HDA",
-			},
-		},
-	},
-	{
-		type = "Folder" :: "Folder",
-		id = "Folder3",
-		displayName = "Folder 3",
-		children = {
-			{
-				type = "Asset" :: "Asset",
-				id = "Asset7",
-				displayName = "Asset 7",
-				assetType = "HDA",
-			},
-		},
-	},
-	{
-		type = "Folder" :: "Folder",
-		id = "Folder4",
-		displayName = "Folder 4",
-	},
-}
+local useEffect = React.useEffect
 
 local function AssetsScreen()
-	local rootDir, setRootDir = useState(FS)
+	local daemonConnection = useDaemonConnection()
+
+	local rootDir, setRootDir = useState({})
 	local currentDirId, setCurrentDirId = useState("{ROOT}")
 	local selectedFileId: string?, setSelectedFileId = useState(nil :: string?)
 
 	local sortMode, setSortMode = useState("asc")
 	local sortTarget, setSortTarget = useState("displayName")
 
+	local function refresh()
+		if daemonConnection then
+			task.spawn(function()
+				local rootDir = daemonConnection:listFiles()
+				setRootDir(rootDir)
+			end)
+		else
+			warn("Tried to refresh, but no daemon connection was available")
+		end
+	end
+
+	useEffect(refresh, { daemonConnection })
+
 	return e(FileSystemContext.Provider, {
 		value = {
 			currentDirId = currentDirId,
 			selectedFileId = selectedFileId,
 			rootDir = rootDir,
+			refresh = refresh,
 			selectFile = setSelectedFileId,
 			renameFile = function(fileId: string, newName: string)
 				setRootDir(function(rootDir_)
