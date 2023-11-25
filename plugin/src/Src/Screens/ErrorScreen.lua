@@ -85,7 +85,7 @@ local function ErrorScreen()
 				loading = false,
 				layoutOrder = 2,
 				onClick = function()
-					navigation.goBack()
+					navigation.navigate(PluginConstants.RootScreen.Connect)
 				end,
 			}, {}),
 		}),
