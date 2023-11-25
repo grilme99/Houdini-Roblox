@@ -16,6 +16,8 @@ local e = React.createElement
 local useState = React.useState
 local useEffect = React.useEffect
 
+type Array<T> = { T }
+
 local function AssetsScreen()
 	local daemonConnection = useDaemonConnection()
 
@@ -23,6 +25,9 @@ local function AssetsScreen()
 	local currentDirId, setCurrentDirId = useState("{ROOT}")
 	local selectedFileId: string?, setSelectedFileId = useState(nil :: string?)
 	local renamingFileId: string?, setRenamingFileId = useState(nil :: string?)
+
+	local navigationStack, setNavigationStack = useState({"{ROOT}"} :: Array<string>)
+	local navigationIndex, setNavigationIndex = useState(1)
 
 	local sortMode, setSortMode = useState("asc")
 	local sortTarget, setSortTarget = useState("displayName")
@@ -46,6 +51,21 @@ local function AssetsScreen()
 			selectedFileId = selectedFileId,
 			renamingFileId = renamingFileId,
 			rootDir = rootDir,
+
+			navigationStack = navigationStack,
+			navigationIndex = navigationIndex,
+			goForward = function()
+				if navigationIndex < #navigationStack then
+					setNavigationIndex(navigationIndex + 1)
+					setCurrentDirId(navigationStack[navigationIndex + 1])
+				end
+			end,
+			goBack = function()
+				if navigationIndex > 0 then
+					setNavigationIndex(navigationIndex - 1)
+					setCurrentDirId(navigationStack[navigationIndex - 1])
+				end
+			end,
 
 			refresh = refresh,
 			openAssetImport = function()
@@ -96,6 +116,23 @@ local function AssetsScreen()
 			setCurrentDir = function(dirId: string)
 				setCurrentDirId(dirId)
 				setSelectedFileId(nil)
+
+				setNavigationStack(function(navigationStack_)
+					local navigationStack = table.clone(navigationStack_)
+
+					if navigationIndex < #navigationStack then
+						-- Remove all items after the current index
+						for i = #navigationStack, navigationIndex + 1, -1 do
+							table.remove(navigationStack, i)
+						end
+					end
+
+					-- Add the new directory to the stack
+					table.insert(navigationStack, dirId)
+					setNavigationIndex(#navigationStack)
+
+					return navigationStack
+				end)
 			end,
 			setRenamingFileId = setRenamingFileId,
 

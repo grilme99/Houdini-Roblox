@@ -240,6 +240,7 @@ local function ListItem(props: Props)
 				NameContainer = e("Frame", {
 					Size = UDim2.fromScale(tableTabs.tabs.name, 1),
 					BackgroundTransparency = 1,
+					ZIndex = 2,
 				}, {
 					ItemName = e(if renaming then "TextBox" else "TextLabel", {
 						AnchorPoint = Vector2.new(0, 0.5),
@@ -252,6 +253,7 @@ local function ListItem(props: Props)
 						Text = fileData.displayName,
 						FontFace = Font.Regular,
 						TextSize = 16,
+						TextTruncate = if not renaming then Enum.TextTruncate.AtEnd else nil,
 						TextColor3 = theme:GetColor(Enum.StudioStyleGuideColor.BrightText),
 						TextXAlignment = Enum.TextXAlignment.Left,
 						ClearTextOnFocus = if renaming then false else nil,

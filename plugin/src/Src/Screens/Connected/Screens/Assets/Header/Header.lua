@@ -35,6 +35,9 @@ local function Header()
 	local theme = useStudioTheme()
 	local fileSystem = useFileSystem()
 
+	local canGoForward = fileSystem.navigationIndex < #fileSystem.navigationStack
+	local canGoBack = fileSystem.navigationIndex > 1
+
 	local directoryName = useMemo(function()
 		if fileSystem.currentDirId == "{ROOT}" then
 			return "Home"
@@ -81,8 +84,9 @@ local function Header()
 					innerPadding = Vector2.new(16, 10),
 					imageOffset = Vector2.new(-1, 0),
 					layoutOrder = 1,
+					disabled = not canGoBack,
 					onClick = function()
-						print("Back")
+						fileSystem.goBack()
 					end,
 				}),
 
@@ -92,10 +96,10 @@ local function Header()
 					imageOffset = Vector2.new(1, 0),
 					iconSize = Vector2.new(8, 16),
 					layoutOrder = 2,
+					disabled = not canGoForward,
 					onClick = function()
-						print("Forward")
+						fileSystem.goForward()
 					end,
-					-- disabled = true,
 				}),
 			}),
 
@@ -121,50 +125,49 @@ local function Header()
 		}, {
 			ListLayout = e(ListLayout, {
 				padding = UDim.new(0, 4),
-                alignment = Enum.HorizontalAlignment.Right,
+				alignment = Enum.HorizontalAlignment.Right,
 			}),
 
 			SearchButton = e(HeaderButton, {
 				icon = SearchIcon,
 				iconSize = Vector2.new(16, 16),
-                dimmedIcon = true,
+				dimmedIcon = true,
 				layoutOrder = 5,
 				onClick = function()
 					print("Search")
 				end,
 			}),
 
-            Padding1 = e("Frame", {
-                Size = UDim2.fromOffset(10, 0),
-                BackgroundTransparency = 1,
-                LayoutOrder = 4,
-            }),
+			Padding1 = e("Frame", {
+				Size = UDim2.fromOffset(10, 0),
+				BackgroundTransparency = 1,
+				LayoutOrder = 4,
+			}),
 
-            UploadButton = e(HeaderButton, {
-                icon = UploadIcon,
-                iconSize = Vector2.new(16, 16),
-                dimmedIcon = true,
-                layoutOrder = 3,
-                onClick = function()
-                    fileSystem.openAssetImport()
-                end,
-            }),
+			UploadButton = e(HeaderButton, {
+				icon = UploadIcon,
+				iconSize = Vector2.new(16, 16),
+				dimmedIcon = true,
+				layoutOrder = 3,
+				onClick = function()
+					fileSystem.openAssetImport()
+				end,
+			}),
 
-            AddFolderButton = e(HeaderButton, {
-                icon = AddFolderIcon,
-                iconSize = Vector2.new(18, 16),
-                dimmedIcon = true,
-                layoutOrder = 2,
-                onClick = function()
-                    fileSystem.createFolder(fileSystem.currentDirId, "New Folder")
-                end,
-            }),
+			AddFolderButton = e(HeaderButton, {
+				icon = AddFolderIcon,
+				iconSize = Vector2.new(18, 16),
+				dimmedIcon = true,
+				layoutOrder = 2,
+				onClick = function()
+					fileSystem.createFolder(fileSystem.currentDirId, "New Folder")
+				end,
+			}),
 
-
-            DeleteButton = e(HeaderButton, {
+			DeleteButton = e(HeaderButton, {
 				icon = DeleteIcon,
 				iconSize = Vector2.new(14, 16),
-                dimmedIcon = true,
+				dimmedIcon = true,
 				layoutOrder = 1,
 				disabled = fileSystem.selectedFileId == nil,
 				onClick = function()
