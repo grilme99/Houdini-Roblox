@@ -17,16 +17,11 @@ local e = React.createElement
 
 type Array<T> = { T }
 
-export type Props = {
-	sortMode: string,
-	sortTarget: string,
-}
-
-local function FileList(props: Props)
-	local sortMode = props.sortMode
-	local sortTarget = props.sortTarget
-
+local function FileList()
 	local fileSystem = useFileSystem()
+
+	local sortMode = fileSystem.sortMode
+	local sortTarget = fileSystem.sortTarget
 
 	local directoryChildren: Array<File>
 	if fileSystem.currentDirId == "{ROOT}" then

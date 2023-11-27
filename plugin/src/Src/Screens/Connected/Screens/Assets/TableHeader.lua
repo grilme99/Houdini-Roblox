@@ -12,6 +12,9 @@ local useTableTabs = TableTabs.useTableTabs
 local StudioTheme = require("@Contexts/StudioTheme")
 local useStudioTheme = StudioTheme.useStudioTheme
 
+local FileSystem = require("@Contexts/FileSystem")
+local useFileSystem = FileSystem.useFileSystem
+
 local PluginConstants = require("@Src/PluginConstants")
 local Font = PluginConstants.Font
 
@@ -24,7 +27,7 @@ type TabProps = {
 	innerPadding: number?,
 	includeDivider: boolean,
 	sort: string | nil,
-    onClick: () -> (),
+	onClick: () -> (),
 }
 
 local function Tab(props: TabProps)
@@ -34,7 +37,7 @@ local function Tab(props: TabProps)
 	local innerPadding = props.innerPadding
 	local includeDivider = props.includeDivider
 	local sort = props.sort
-    local onClick = props.onClick
+	local onClick = props.onClick
 
 	local selected = sort ~= nil
 
@@ -56,7 +59,7 @@ local function Tab(props: TabProps)
 			else theme:GetColor(Enum.StudioStyleGuideColor.SubText),
 		TextXAlignment = Enum.TextXAlignment.Left,
 		LayoutOrder = index,
-        [React.Event.Activated] = onClick,
+		[React.Event.Activated] = onClick,
 	}, {
 		Padding = innerPadding and e("UIPadding", {
 			PaddingLeft = UDim.new(0, innerPadding),
@@ -83,34 +86,28 @@ local function Tab(props: TabProps)
 	})
 end
 
-export type Props = {
-	sortMode: string,
-	setSortMode: (string) -> (),
-	sortTarget: string,
-	setSortTarget: (string) -> (),
-}
-
-local function TableHeader(props: Props)
-	local sortMode = props.sortMode
-	local setSortMode = props.setSortMode
-	local sortTarget = props.sortTarget
-	local setSortTarget = props.setSortTarget
-
+local function TableHeader()
+	local fileSystem = useFileSystem()
 	local tableTabs = useTableTabs()
 	local theme = useStudioTheme()
 
-    local function handleClick(tabName: string)
-        if sortTarget == tabName then
-            if sortMode == "asc" then
-                setSortMode("desc")
-            else
-                setSortMode("asc")
-            end
-        else
-            setSortTarget(tabName)
-            setSortMode("asc")
-        end
-    end
+	local sortMode = fileSystem.sortMode
+	local setSortMode = fileSystem.setSortMode
+	local sortTarget = fileSystem.sortTarget
+	local setSortTarget = fileSystem.setSortTarget
+
+	local function handleClick(tabName: string)
+		if sortTarget == tabName then
+			if sortMode == "asc" then
+				setSortMode("desc")
+			else
+				setSortMode("asc")
+			end
+		else
+			setSortTarget(tabName)
+			setSortMode("asc")
+		end
+	end
 
 	return e("Frame", {
 		Position = UDim2.fromOffset(0, 50),

@@ -7,6 +7,8 @@ local ConnectedScreens = PluginConstants.ConnectedScreens
 
 local DaemonBridge = require("@Systems/DaemonBridge")
 
+local FileSystem = require("@Contexts/FileSystem")
+
 local WidgetBackground = require("@Components/Studio/WidgetBackground")
 
 local AssetsScreen = require("@Src/Screens/Connected/Screens/Assets/init")
@@ -47,17 +49,19 @@ function ConnectedScreenNavigator:render()
 			})
 		end,
 	}, {
-		WidgetBackground = e(WidgetBackground, {}, {
-			Navbar = e(Navbar, {}),
-			InfoBar = e(InfoBar, {}),
+		FileSystem = e(FileSystem.Provider, {}, {
+			WidgetBackground = e(WidgetBackground, {}, {
+				Navbar = e(Navbar, {}),
+				InfoBar = e(InfoBar, {}),
 
-			ContentContainer = e("Frame", {
-				Position = UDim2.fromOffset(0, navbarHeight),
-				Size = UDim2.new(1, 0, 1, -(navbarHeight + infoBarHeight)),
-				BackgroundTransparency = 1,
-			}, {
-				Content = e(ConnectedSwitchNavigator, {
-					navigation = navigation,
+				ContentContainer = e("Frame", {
+					Position = UDim2.fromOffset(0, navbarHeight),
+					Size = UDim2.new(1, 0, 1, -(navbarHeight + infoBarHeight)),
+					BackgroundTransparency = 1,
+				}, {
+					Content = e(ConnectedSwitchNavigator, {
+						navigation = navigation,
+					}),
 				}),
 			}),
 		}),
