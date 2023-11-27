@@ -3,6 +3,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
+use chrono::{DateTime, Utc};
 use nanoid::nanoid;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -102,6 +103,7 @@ pub struct AssetConfig {
 pub struct FileConfig {
     pub id: String,
     pub display_name: String,
+    pub date_modified: DateTime<Utc>,
     pub meta: FileType,
 }
 
@@ -134,6 +136,7 @@ pub fn create_folder(directory: &Path, display_name: &str) -> Result<String> {
     let folder_config = FileConfig {
         id: id.to_owned(),
         display_name: display_name.to_string(),
+        date_modified: Utc::now(),
         meta: FileType::Folder(FolderConfig { children: None }),
     };
 
@@ -166,6 +169,7 @@ pub fn save_asset(directory: &Path, asset_path: &Path, display_name: &str) -> Re
     let asset_config = FileConfig {
         id: id.to_owned(),
         display_name: display_name.to_string(),
+        date_modified: Utc::now(),
         meta: FileType::Asset(AssetConfig {
             asset_type: asset_path.into(),
             asset_path: asset_path.to_owned(),
@@ -213,6 +217,16 @@ fn list_files_recursive(current_dir: &Path) -> Result<Vec<FileConfig>> {
             } else if let FileType::Asset(asset_config) = &mut file_config.meta {
                 // If it's an asset configuration, check if the asset file exists.
                 asset_config.asset_exists = asset_config.asset_path.exists();
+
+                let asset_modified: DateTime<Utc> = fs::metadata(&asset_config.asset_path)
+                    .map_err(|err| AssetDirError::FsError(err.to_string()))?
+                    .modified()
+                    .map_err(|err| AssetDirError::FsError(err.to_string()))?
+                    .into();
+
+                if asset_modified > file_config.date_modified {
+                    file_config.date_modified = asset_modified;
+                }
             }
 
             files.push(file_config);
@@ -272,6 +286,7 @@ pub fn rename_file(path: &Path, new_name: &str) -> Result<()> {
     .map_err(|err| AssetDirError::SerdeError(err.to_string()))?;
 
     file_config.display_name = new_name.to_string();
+    file_config.date_modified = Utc::now();
 
     fs::write(
         &file_path,
