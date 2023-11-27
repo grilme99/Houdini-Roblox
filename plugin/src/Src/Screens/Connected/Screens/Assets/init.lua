@@ -1,5 +1,4 @@
 local React = require("@Packages/React")
-local Sift = require("@Packages/Sift")
 
 local FileList = require("@Src/Screens/Connected/Screens/Assets/FileList")
 local TableHeader = require("@Src/Screens/Connected/Screens/Assets/TableHeader")
@@ -26,7 +25,7 @@ local function AssetsScreen()
 	local selectedFileId: string?, setSelectedFileId = useState(nil :: string?)
 	local renamingFileId: string?, setRenamingFileId = useState(nil :: string?)
 
-	local navigationStack, setNavigationStack = useState({"{ROOT}"} :: Array<string>)
+	local navigationStack, setNavigationStack = useState({ "{ROOT}" } :: Array<string>)
 	local navigationIndex, setNavigationIndex = useState(1)
 
 	local sortMode, setSortMode = useState("asc")
@@ -81,18 +80,15 @@ local function AssetsScreen()
 				end
 			end,
 			setFileName = function(fileId: string, newName: string)
-				setRootDir(function(rootDir_)
-					local rootDir = Sift.Dictionary.copyDeep(rootDir_)
-
-					local file: any = FileUtils.IdToFileRecursive(rootDir, fileId)
-					if file then
-						file.displayName = newName
-					else
-						warn("Tried to rename, but could not find file with id", fileId)
-					end
-
-					return rootDir
-				end)
+				if daemonConnection then
+					task.spawn(function()
+						local filePath = FileUtils.BuildFilePath(rootDir, fileId)
+						daemonConnection:renameFile(filePath, newName)
+						refresh()
+					end)
+				else
+					warn("Tried to rename file, but no daemon connection was available")
+				end
 			end,
 
 			createFolder = function(dirId: string, name: string)

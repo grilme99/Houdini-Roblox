@@ -123,6 +123,13 @@ function DaemonConnection.listFiles(self: DaemonConnection): HttpTypes.FileSyste
 	end
 end
 
+function DaemonConnection.renameFile(self: DaemonConnection, filePath: string, newName: string)
+	self:_makeRequest("/rename-file", {
+		path = filePath,
+		newName = newName,
+	})
+end
+
 function DaemonConnection.deleteFile(self: DaemonConnection, filePath: string)
 	self:_makeRequest("/delete-file", {
 		path = filePath,

@@ -256,6 +256,33 @@ pub fn delete_file(path: &Path) -> Result<()> {
     Ok(())
 }
 
+pub fn rename_file(path: &Path, new_name: &str) -> Result<()> {
+    let root_dir = get_root_dir()?;
+    let file_path = root_dir.join(path).with_extension("json");
+
+    if !file_path.exists() {
+        return Err(AssetDirError::FileDoesNotExist(
+            file_path.to_string_lossy().to_string(),
+        ));
+    }
+
+    let mut file_config: FileConfig = serde_json::from_reader(
+        fs::File::open(&file_path).map_err(|err| AssetDirError::FsError(err.to_string()))?,
+    )
+    .map_err(|err| AssetDirError::SerdeError(err.to_string()))?;
+
+    file_config.display_name = new_name.to_string();
+
+    fs::write(
+        &file_path,
+        serde_json::to_string_pretty(&file_config).unwrap(),
+    )
+    .map_err(|err| AssetDirError::FsError(err.to_string()))?;
+
+    log::debug!("Renamed file {file_path:?} to {new_name}");
+    Ok(())
+}
+
 pub fn list_files() -> Result<Vec<FileConfig>> {
     let root_dir = get_root_dir()?;
     log::debug!("Listing files in {root_dir:?}");
