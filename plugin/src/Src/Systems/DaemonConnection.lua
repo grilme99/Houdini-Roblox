@@ -3,6 +3,7 @@ local HttpService = game:GetService("HttpService")
 local HttpTypes = require("@Types/HttpTypes")
 type ConnectionResult = HttpTypes.ConnectionResult
 
+type Array<T> = { T }
 type Map<K, V> = { [K]: V }
 
 type RequestResult = {
@@ -117,7 +118,8 @@ function DaemonConnection.listFiles(self: DaemonConnection): HttpTypes.FileSyste
 	local result = self:_makeRequest("/list-files", {})
 
 	if result.success then
-		return result.result.body.files
+		local files = result.result.body.files
+		return files
 	else
 		return {}
 	end

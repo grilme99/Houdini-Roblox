@@ -28,6 +28,7 @@ export type FolderFile = {
 export type File = {
 	id: string,
 	displayName: string,
+	dateModified: string,
 	meta: AssetFile | FolderFile,
 }
 

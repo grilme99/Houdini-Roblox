@@ -35,10 +35,20 @@ local function FileList()
 	-- Sort the directory children based on the sort mode and target
 	local sortedChildren = table.clone(directoryChildren)
 	table.sort(sortedChildren, function(a: any, b: any)
+		local aTarget = a[sortTarget]
+		local bTarget = b[sortTarget]
+
+		if sortTarget == "type" then
+			-- Join the file type and asset type together, so that assets are
+			-- always grouped in the file list.
+			aTarget = `{a.meta.type}_{a.meta.assetType or ""}`
+			bTarget = `{b.meta.type}_{b.meta.assetType or ""}`
+		end
+
 		if sortMode == "asc" then
-			return a[sortTarget] < b[sortTarget]
+			return aTarget < bTarget
 		else
-			return a[sortTarget] > b[sortTarget]
+			return aTarget > bTarget
 		end
 	end)
 

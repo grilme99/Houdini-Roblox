@@ -54,6 +54,26 @@ local function ListItem(props: Props)
 
 	local folderIcon = StudioService:GetClassIcon("Folder")
 
+	-- Format date modified as follows:
+	-- `Today, 17:14`
+	-- `Yesterday, 17:14`
+	-- `13 May 2020, 17:14`
+	-- TODO: Localize date format
+	local formattedDateModified = "Unknown"
+	if fileData.dateModified then
+		local dateModified = DateTime.fromIsoDate(fileData.dateModified)
+		local now = os.time()
+
+		local daysSince = (now - dateModified.UnixTimestamp) / 86400
+		if daysSince < 1 then
+			formattedDateModified = "Today, " .. dateModified:FormatLocalTime("HH:mm", "en-us")
+		elseif daysSince < 2 then
+			formattedDateModified = "Yesterday, " .. dateModified:FormatLocalTime("HH:mm", "en-us")
+		else
+			formattedDateModified = dateModified:FormatLocalTime("DD MMM YYYY, HH:mm", "en-us")
+		end
+	end
+
 	local icon, iconSize
 	if fileData.meta.type == "Folder" then
 		icon = folderIcon
@@ -282,7 +302,7 @@ local function ListItem(props: Props)
 					Position = UDim2.fromScale(tableTabs.tabs.name, 0.5),
 					Size = UDim2.new(tableTabs.tabs.dateModified, -4, 1, 0),
 					BackgroundTransparency = 1,
-					Text = "Today, 17:14",
+					Text = formattedDateModified,
 					FontFace = Font.Regular,
 					TextSize = 16,
 					TextColor3 = theme:GetColor(Enum.StudioStyleGuideColor.SubText),
